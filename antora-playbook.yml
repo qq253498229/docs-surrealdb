@@ -3,7 +3,7 @@ site:
   start_page: docs-surrealdb::index.adoc
 content:
   sources:
-    - url: .
+    - url: https://github.com/qq253498229/docs-surrealdb.git
       branches: [HEAD]
 ui:
   bundle:
