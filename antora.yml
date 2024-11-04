@@ -1,5 +1,5 @@
 name: docs-surrealdb
-title: docs-surrealdb
+title: SurrealDB
 version: '0.0.1'
 start_page: ROOT:index.adoc
 nav:

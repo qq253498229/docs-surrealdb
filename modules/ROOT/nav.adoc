@@ -1,1 +1,1 @@
-* xref:1918.adoc[列宁在1918]
+* xref:index.adoc[]

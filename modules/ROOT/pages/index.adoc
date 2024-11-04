@@ -1,3 +1,13 @@
-= 主页
+= 概述
 
-这里是主页
+
+image::https://surrealdb.com/docs/_astro/gettingstarted.C_WpJK4d_ZDNF1C.webp[]
+
+SurrealDB使得构建和扩展实时应用程序的速度更快、更简单。
+通过安装服务器开始，并快速浏览我们的入门指南，了解如何在几分钟内插入和查询SurrealDB中的数据。
+
+为了快速测试SurrealDB和SurrealQL的功能，我们提供了演示数据集，您可以下载并导入到您的SurrealDB实例中。
+
+SurrealDB的当前稳定版本是 link:https://surrealdb.com/releases[v2.0.4,window=_blank]。
+
+

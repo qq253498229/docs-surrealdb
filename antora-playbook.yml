@@ -1,5 +1,5 @@
 site:
-  title: docs-surrealdb
+  title: SurrealDB文档
   start_page: docs-surrealdb::index.adoc
 content:
   sources:
