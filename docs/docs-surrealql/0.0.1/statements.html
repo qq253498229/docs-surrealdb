@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: SurrealDB文档</title>
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="../..">SurrealDB文档</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/qq253498229/docs-surrealdb"
+           target="_blank">Home</a>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary"
+               href="https://github.com/qq253498229/docs-surrealdb/archive/refs/heads/master.zip">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="docs-surrealql" data-version="0.0.1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">SurrealQL</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">SurrealQL</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="demo-data.html">演示数据</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="datamodel.html">Data模型</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Arrays</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Booleans</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Casting</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Closures</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Datetimes</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Formatters</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Futures</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Geometries</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Idioms</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Literals</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">None and Null</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Numbers</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Objects</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Ranges</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Record IDs</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Record links</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Sets</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Strings</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">UUIDs</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Values</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="statements.html">Statements</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">ALTER</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">BEGIN</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">BREAK</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">CANCEL</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">COMMIT</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">CONTINUE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">CREATE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">DEFINE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">DELETE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">FOR</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">IF ELSE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">INFO</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">INSERT</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">KILL</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">LET</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">LIVE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">REBUILD</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">RELATE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">REMOVE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">RETURN</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">SELECT</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">SHOW</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">SLEEP</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">THROW</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">UPDATE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">UPSERT</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">USE</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Functions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Database Functions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Array functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Bytes functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Count functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Crypto functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Duration functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Encoding functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Geo functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">HTTP functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Math functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Meta functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Not functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Object functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Parse functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Rand functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Record functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Search functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Session functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Sleep functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">String functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Time functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Type functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Value functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Vector functions</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">JavaScript Functions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Arguments</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Built-in functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Function context</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Type conversion</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">SurrealQL functions</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">SurrealML Functions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Machine learning functions</span>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="operations.html">Operations</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="parameters.html">Parameters</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <span class="nav-text">Transactions</span>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <span class="nav-text">Comments</span>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SurrealQL</span>
+    <span class="version">0.0.1</span>
+  </div>
+  <ul class="components">
+    <li class="component">
+      <div class="title"><a href="../../docs-surrealdb/0.0.1/index.html">SurrealDB</a></div>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../docs-surrealdb/0.0.1/index.html">0.0.1</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component is-current">
+      <div class="title"><a href="index.html">SurrealQL</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">0.0.1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../docs-surrealdb/0.0.1/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">SurrealQL</a></li>
+    <li><a href="statements.html">Statements</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/qq253498229/docs-surrealdb/edit/surrealql/modules/ROOT/pages/statements.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="目录" data-levels="3">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_声明"><a class="anchor" href="#_声明"></a>1. 声明</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SurrealDB 提供了多种声明，让您可以配置和查询数据库：<code>CREATE</code>（创建）、<code>INSERT</code>（插入）、<code>UPDATE</code>（更新）等。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_声明参数"><a class="anchor" href="#_声明参数"></a>2. 声明参数</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>在声明中，一些以 <code>$</code> 开头的参数会自动提供，让您能够访问声明内部的相关上下文。这些被称为保留变量名。例如：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>在修改值的声明中，<code><a href="parameters.html#before-after" class="page">$before</a></code> 和 <code><a href="parameters.html#before-after" class="page">$after</a></code> 可以被访问，以查看更新前后的值。</p>
+</li>
+<li>
+<p><code><a href="parameters.html#session" class="page">$session</a></code> 提供了关于当前会话的上下文。</p>
+</li>
+<li>
+<p><code><a href="parameters.html#parent-this" class="page">$parent</a></code> 在子查询中提供对主查询值的访问。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>有关这些自动生成参数的完整列表，请查看 <code><a href="parameters.html#reserved-variable-names" class="page">参数</a></code> 页面。</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

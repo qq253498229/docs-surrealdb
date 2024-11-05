@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>操作符 :: SurrealDB文档</title>
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="../..">SurrealDB文档</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/qq253498229/docs-surrealdb"
+           target="_blank">Home</a>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary"
+               href="https://github.com/qq253498229/docs-surrealdb/archive/refs/heads/master.zip">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="docs-surrealql" data-version="0.0.1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">SurrealQL</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">SurrealQL</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="demo-data.html">演示数据</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="datamodel.html">Data模型</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Arrays</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Booleans</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Casting</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Closures</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Datetimes</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Formatters</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Futures</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Geometries</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Idioms</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Literals</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">None and Null</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Numbers</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Objects</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Ranges</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Record IDs</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Record links</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Sets</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Strings</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">UUIDs</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">Values</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="statements.html">Statements</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">ALTER</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">BEGIN</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">BREAK</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">CANCEL</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">COMMIT</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">CONTINUE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">CREATE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">DEFINE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">DELETE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">FOR</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">IF ELSE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">INFO</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">INSERT</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">KILL</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">LET</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">LIVE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">REBUILD</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">RELATE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">REMOVE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">RETURN</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">SELECT</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">SHOW</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">SLEEP</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">THROW</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">UPDATE</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">UPSERT</span>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <span class="nav-text">USE</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Functions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Database Functions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Array functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Bytes functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Count functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Crypto functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Duration functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Encoding functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Geo functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">HTTP functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Math functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Meta functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Not functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Object functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Parse functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Rand functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Record functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Search functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Session functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Sleep functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">String functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Time functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Type functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Value functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Vector functions</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">JavaScript Functions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Arguments</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Built-in functions</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Function context</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Type conversion</span>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">SurrealQL functions</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">SurrealML Functions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <span class="nav-text">Machine learning functions</span>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="operations.html">Operations</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="parameters.html">Parameters</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <span class="nav-text">Transactions</span>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <span class="nav-text">Comments</span>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SurrealQL</span>
+    <span class="version">0.0.1</span>
+  </div>
+  <ul class="components">
+    <li class="component">
+      <div class="title"><a href="../../docs-surrealdb/0.0.1/index.html">SurrealDB</a></div>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../docs-surrealdb/0.0.1/index.html">0.0.1</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component is-current">
+      <div class="title"><a href="index.html">SurrealQL</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">0.0.1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../docs-surrealdb/0.0.1/index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">SurrealQL</a></li>
+    <li><a href="operations.html">Operations</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="https://github.com/qq253498229/docs-surrealdb/edit/surrealql/modules/ROOT/pages/operations.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="目录" data-levels="3">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">操作符</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SurrealQL中的多种操作符允许对数据进行复杂的操作和高级逻辑处理。</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">操作符</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#and">&amp;&amp; or AND</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查两个值是否都是真值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#or">|| or OR</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查两个值中是否有任意一个是真值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#not">!</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">反转一个值的真值性。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#not_not">!!</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">判断一个值的真值性。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#nco">??</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查两个值中是否有任意一个为真值且不为 NULL。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#tco">?:</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查两个值中是否有任意一个为真值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#equal">= or IS</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查两个值是否相等。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#notequal">!= or IS NOT</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查两个值是否不相等。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#exact">==</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查两个值是否完全相等。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#anyequal">?=</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一组值中是否有任何值等于给定值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#allequal">*=</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一组值中的所有值是否都等于给定值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#match">~</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">使用模糊匹配比较两个值是否相等。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#notmatch">!~</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">使用模糊匹配比较两个值是否不相等。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#anymatch">?~</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一组值中是否有任何值使用模糊匹配等于给定值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#allmatch">*~</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一组值中的所有值是否使用模糊匹配都等于给定值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#lessthan">&lt;</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否小于另一个值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#lessthanorequal">&lt;=</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否小于或等于另一个值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#greaterthan"></a>&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否大于另一个值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#greaterthanorequal"></a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否大于或等于另一个值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#add">+</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将两个值相加。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#sub">-</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">从一个值中减去另一个值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#mul">* or ×</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将两个值相乘。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#div">/ or ÷</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将一个值除以另一个值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#pow">**</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将一个基数值提升至另一个值的幂。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#inside">IN</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否包含在另一个值中。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#notinside">NOT IN</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否不包含在另一个值中。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#contains">CONTAINS or ∋</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否包含另一个值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#containsnot">CONTAINSNOT or ∌</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否不包含另一个值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#containsall">CONTAINSALL or ⊇</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否包含所有其他值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#containsany">CONTAINSANY or ⊃</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否包含任何其他值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CONTAINSNONE or ⊅</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否不包含以下任何值。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#inside">INSIDE or ∈</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否包含在另一个值中。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#notinside">NOTINSIDE or NOT IN or ∉</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个值是否不包含在另一个值中。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#allinside">ALLINSIDE or ⊆</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查所有值是否包含在其他值中。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#anyinside">ANYINSIDE or ⊂</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查是否有任何值包含在其他值中。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#noneinside">NONEINSIDE or ⊄</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查是否有任何值不包含在其他值中。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#outside">OUTSIDE</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个几何类型是否在另一个几何类型之外。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#intersects">INTERSECTS</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查一个几何类型是否与另一个几何类型相交。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#matches">@@ or @[ref]@</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">检查在全文索引字段中是否找到了这些术语。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#knn">&lt;|4|&gt; or &lt;|3,HAMMING| &gt; </a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">执行一个K-最近邻（KNN）搜索，以找到最接近给定数据点的指定数量的记录，可以选择使用定义的距离度量。支持自定义结果数量和距离计算方法的选择。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="and"><a class="anchor" href="#and"></a>1. &amp;&amp; or AND</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查两个值是否都是 <a href="datamodel/values.html#values-and-truthiness" class="page">真值</a>。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 AND 20 AND 30;
+
+30</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="or"><a class="anchor" href="#or"></a>2. || or OR</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查两个值中是否有任意一个是 <a href="datamodel/values.html#values-and-truthiness" class="page">真值</a>。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 0 OR false OR 10;
+
+10</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="not"><a class="anchor" href="#not"></a>3. !</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>反转一个值的真值性。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM !(TRUE OR FALSE)
+
+false
+
+SELECT * FROM !"Has a value";
+
+false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="not_not"><a class="anchor" href="#not_not"></a>4. !!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>确定一个值的真值性（简单地应用两次！操作符）。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM !!"Has a value";
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="nco"><a class="anchor" href="#nco"></a>5. ??</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查两个值中是否有任意一个为真值且不为 NULL。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM NULL ?? 0 ?? false ?? 10;
+
+0</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tco"><a class="anchor" href="#tco"></a>6. ?:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查两个值中是否有任意一个为 <a href="datamodel/values.html#values-and-truthiness" class="page">真值</a>。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM NULL ?: 0 ?: false ?: 10;
+
+10</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="equal"><a class="anchor" href="#equal"></a>7. = or IS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查两个值是否相等。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM true = "true";
+
+false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 = "10";
+
+false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 = 10.00;
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 = "10.3";
+
+false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [1, 2, 3] = [1, 2, 3];
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [1, 2, 3] = [1, 2, 3, 4];
+
+false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM { this: "object" } = { this: "object" };
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM { this: "object" } = { another: "object" };
+
+false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="notequal"><a class="anchor" href="#notequal"></a>8. != or IS NOT</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查两个值是否相等。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 != "15";
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 != "test";
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [1, 2, 3] != [3, 4, 5];
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="exact"><a class="anchor" href="#exact"></a>9. ==</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查两个值是否完全相同。此操作符还检查每个值是否具有相同的类型。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 == 10;
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 == "10";
+
+false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM true == "true";
+
+false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="anyequal"><a class="anchor" href="#anyequal"></a>10. ?=</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查数组中的任意值是否等于另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [10, 15, 20] ?= 10;
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="allequal"><a class="anchor" href="#allequal"></a>11. *=</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查数组中的所有值是否等于另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [10, 10, 10] *= 10;
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="match"><a class="anchor" href="#match"></a>12. ~</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>使用模糊匹配比较两个值是否相等。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "test text" ~ "Test";
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "true" ~ true;
+
+false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM ["test", "thing"] ~ "test";
+
+false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="notmatch"><a class="anchor" href="#notmatch"></a>13. !~</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>使用模糊匹配比较两个值是否不相等。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "other text" !~ "test";
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "test text" !~ "Test";
+
+false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="anymatch"><a class="anchor" href="#anymatch"></a>14. ?~</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一组值中是否有任何值使用模糊匹配等于给定值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM ["true", "test", "text"] ?~ true;
+
+false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [1, 2, 3] ?~ "2";
+
+false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="allmatch"><a class="anchor" href="#allmatch"></a>15. *~</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一组值中的所有值是否使用模糊匹配都等于给定值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM ["TRUE", true, "true", "TrUe"] *~ true;
+
+false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM ["TEST", "test", "text"] *~ "test";
+
+false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lessthan"><a class="anchor" href="#lessthan"></a>16. &lt;</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否小于另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 &lt; 15;
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lessthanorequal"><a class="anchor" href="#lessthanorequal"></a>17. &#8656;</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否小于或等于另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 &lt;= 15;
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="greaterthan"><a class="anchor" href="#greaterthan"></a>18. &gt;</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否小于另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 15 &gt; 10;
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="greaterthanorequal"><a class="anchor" href="#greaterthanorequal"></a>19. &gt;=</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否小于或等于另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 15 &gt;= 10;
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="add"><a class="anchor" href="#add"></a>20. +</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>将两个值相加。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 + 10;
+
+20</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "test" + " " + "this";
+
+"test this"</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 13h + 30m;
+
+"13h30m"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sub"><a class="anchor" href="#sub"></a>21. -</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>从一个值中减去另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 20 - 10;
+
+10</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 2m - 1m;
+
+"1m"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mul"><a class="anchor" href="#mul"></a>22. * or ×</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>将一个值乘以另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 20 * 2;
+
+40</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="div"><a class="anchor" href="#div"></a>23. / or ÷</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>将一个值除以另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 20 / 2;
+
+10</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pow"><a class="anchor" href="#pow"></a>24. **</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>将一个基数值提升到另一个值的幂。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 20 ** 3;
+
+8000</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="contains"><a class="anchor" href="#contains"></a>25. CONTAINS or ∋</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否包含另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [10, 20, 30] CONTAINS 10;
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "this is some text" CONTAINS "text";
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+} CONTAINS (-0.118092, 51.509865);
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="containsnot"><a class="anchor" href="#containsnot"></a>26. CONTAINSNOT or ∌</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否不包含另一个值。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [10, 20, 30] CONTAINSNOT 15;
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "this is some text" CONTAINSNOT "other";
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+} CONTAINSNOT (-0.518092, 53.509865);
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="containsall"><a class="anchor" href="#containsall"></a>27. CONTAINSALL or ⊇</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否包含多个值的全部。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [10, 20, 30] CONTAINSALL [10, 20, 10];
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="containsany"><a class="anchor" href="#containsany"></a>28. CONTAINSANY or ⊃</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否包含多个值中的任何一个。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [10, 20, 30] CONTAINSANY [10, 15, 25];
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="inside"><a class="anchor" href="#inside"></a>29. INSIDE or ∈ or IN</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否被另一个值包含。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 10 INSIDE [10, 20, 30];
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "text" INSIDE "this is some text";
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM (-0.118092, 51.509865) INSIDE {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+};
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="notinside"><a class="anchor" href="#notinside"></a>30. NOTINSIDE or ∉ or NOT IN</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个值是否不被另一个值包含。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM 15 NOTINSIDE [10, 20, 30];
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM "other" NOTINSIDE "this is some text";
+
+true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM (-0.518092, 53.509865) NOTINSIDE {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+};
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="allinside"><a class="anchor" href="#allinside"></a>31. ALLINSIDE or ⊆</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查多个值中的所有值是否被另一个值包含。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [10, 20, 10] ALLINSIDE [10, 20, 30];
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="anyinside"><a class="anchor" href="#anyinside"></a>32. ANYINSIDE or ⊂</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查多个值中的任何一个是否被另一个值包含。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [10, 15, 25] ANYINSIDE [10, 20, 30];
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="noneinside"><a class="anchor" href="#noneinside"></a>33. NONEINSIDE or ⊄</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查多个值中的任何一个是否不被另一个值包含。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM [15, 25, 35] NONEINSIDE [10, 20, 30];
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="outside"><a class="anchor" href="#outside"></a>34. OUTSIDE</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个几何值是否在另一个几何值的外部。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM (-0.518092, 53.509865) OUTSIDE {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+};
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="intersects"><a class="anchor" href="#intersects"></a>35. INTERSECTS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查一个几何值是否与另一个几何值相交。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+} INTERSECTS {
+	type: "Polygon",
+	coordinates: [[
+		[-0.11123657, 51.53160074], [-0.16925811, 51.51921169],
+		[-0.11466979, 51.48223813], [-0.07381439, 51.51322956],
+		[-0.11123657, 51.53160074]
+	]]
+};
+
+true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="matches"><a class="anchor" href="#matches"></a>36. MATCHES</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>检查全文索引字段中是否找到了这些术语。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT * FROM book WHERE title @@ 'rust web';
+
+
+[
+	{
+		id: book:1,
+		title: 'Rust Web Programming'
+	}
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>使用匹配操作符和参考，检查是否找到了术语，突出显示搜索的术语，并计算全文分数。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>SELECT id,
+		search::highlight('&lt;b&gt;', '&lt;/b&gt;', 1) AS title,
+		search::score(1) AS score
+FROM book
+WHERE title @1@ 'rust web'
+ORDER BY score DESC;
+
+[
+	{
+		id: book:1,
+		score: 0.9227996468544006f,
+		title: '&lt;b&gt;Rust&lt;/b&gt; &lt;b&gt;Web&lt;/b&gt; Programming'
+	}
+]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="knn"><a class="anchor" href="#knn"></a>37. #KNN</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>K-最近邻（KNN）是一种基于特征空间中最近的数据点进行分类或回归的基本算法，其在涉及大型数据集的应用中的性能和可扩展性至关重要。</p>
+</div>
+<div class="paragraph">
+<p>在实践中，KNN算法的效率和可扩展性非常关键，尤其是在处理大型数据集时。KNN的不同实现旨在优化这些方面，同时不牺牲结果的准确性。</p>
+</div>
+<div class="paragraph">
+<p>SurrealDB 支持不同的K-最近邻方法来执行KNN搜索，每种方法都有其独特的语法要求。以下是每种方法的详细信息，包括如何格式化查询的示例：</p>
+</div>
+<div class="sect2">
+<h3 id="brute-force-method"><a class="anchor" href="#brute-force-method"></a>37.1. Brute Force Method</h3>
+<div class="paragraph">
+<p>最适合小型数据集或当需要最高准确度时。</p>
+</div>
+<div class="listingblock">
+<div class="title">SurrealQL Syntax</div>
+<div class="content">
+<pre class="highlightjs highlight"><code>&lt;|K,DISTANCE_METRIC|&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>K：要检索的最近邻居的数量。</p>
+</li>
+<li>
+<p>DISTANCE_METRIC：用于计算距离的度量标准，例如欧几里得（EUCLIDEAN）或曼哈顿（MANHATTAN）。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>CREATE pts:3 SET point = [8,9,10,11];
+SELECT id FROM pts WHERE point &lt;|2,EUCLIDEAN|&gt; [2,3,4,5];</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mtree-index-method"><a class="anchor" href="#mtree-index-method"></a>37.2. MTREE Index Method</h3>
+<div class="paragraph">
+<p>适用于大型数据集，当性能至关重要且可以预定义一致的距离度量标准时。</p>
+</div>
+<div class="listingblock">
+<div class="title">SurrealQL Syntax</div>
+<div class="content">
+<pre class="highlightjs highlight"><code>&lt;|K|&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>K：最近邻居的数量。距离度量标准在索引中预定义，简化了语法。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>CREATE pts:3 SET point = [8,9,10,11];
+DEFINE INDEX mt_pts ON pts FIELDS point MTREE DIMENSION 4 DIST EUCLIDEAN;
+SELECT id FROM pts WHERE point &lt;|2|&gt; [2,3,4,5];</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="hnsw-method"><a class="anchor" href="#hnsw-method"></a>37.3. HNSW Method</h3>
+<div class="paragraph">
+<p>推荐用于非常大的数据集，当速度至关重要且可以接受一定程度的准确性损失时。</p>
+</div>
+<div class="listingblock">
+<div class="title">SurrealQL Syntax</div>
+<div class="content">
+<pre class="highlightjs highlight"><code>&lt;|K,EF|&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>K：最近邻居的数量。</p>
+</li>
+<li>
+<p>EF（Effective Number）：搜索过程中动态候选列表的大小，影响搜索的准确性和速度。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>CREATE pts:3 SET point = [8,9,10,11];
+DEFINE INDEX mt_pts ON pts FIELDS point HNSW DIMENSION 4 DIST EUCLIDEAN EFC 150 M 12;
+SELECT id FROM pts WHERE point &lt;|10,40|&gt; [2,3,4,5];</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
