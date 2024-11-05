@@ -1,0 +1,39 @@
+= Parameters
+
+[[defining-parameters-within-surrealql]]
+== Defining parameters within SurrealQL
+
+[[defining-parameters-within-client-libraries]]
+== Defining parameters within client libraries
+
+[[reserved-variable-names]]
+== Reserved variable names
+
+[[before-after]]
+=== $before, $after
+
+[[auth]]
+=== $auth
+
+[[event]]
+=== $event
+
+[[input]]
+=== $input
+
+[[parent-this]]
+=== $parent, $this
+
+[[access]]
+=== $access
+
+[[session]]
+=== $session
+
+[[token]]
+=== $token
+
+[[value]]
+=== $value
+
+

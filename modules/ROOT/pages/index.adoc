@@ -1,13 +1,32 @@
-= 概述
+= SurrealQL
 
+在本节中，您将探索SurrealQL，这是一种强大的数据库查询语言，它与传统的SQL非常相似，但具有独特的差异和改进。
 
-image::https://surrealdb.com/docs/_astro/gettingstarted.C_WpJK4d_ZDNF1C.webp[]
+SurrealQL旨在为开发者提供一种无缝且直观的与SurrealDB交互的方式。 它提供了熟悉的语法，并支持各种语句类型，使您能够高效地执行复杂的数据库操作。
 
-SurrealDB使得构建和扩展实时应用程序的速度更快、更简单。
-通过安装服务器开始，并快速浏览我们的入门指南，了解如何在几分钟内插入和查询SurrealDB中的数据。
+虽然SurrealQL与传统SQL有相似之处，但它引入了增强和优化，使其非常适合与SurrealDB的高级功能一起使用。 无论您是查询数据、修改记录还是管理数据库结构，SurrealQL都提供了一套全面的功能，以满足您的需求。
 
-为了快速测试SurrealDB和SurrealQL的功能，我们提供了演示数据集，您可以下载并导入到您的SurrealDB实例中。
+[[key-features]]
+== 关键特性
 
-SurrealDB的当前稳定版本是 link:https://surrealdb.com/releases[v2.0.4,window=_blank]。
+SurrealQL提供了几个关键特性，使其成为与SurrealDB合作的强大工具：
 
+* **熟悉的语法**：SurrealQL采用了与传统SQL类似的语法，使得熟悉SQL的开发者能够无缝过渡到SurrealDB。
+* **高级查询**：SurrealQL支持广泛的查询能力，包括过滤、排序、聚合以及连接多个表中的数据。
+* **数据操作**：通过SurrealQL，您可以轻松地在SurrealDB数据库中插入、更新和删除记录，使您能够有效地管理数据。
+* **图形关系**：SurrealQL支持图形关系，允许您定义和查询数据库中记录之间的关系。
+* **模式管理**：SurrealQL提供了创建和修改数据库模式的特性，使您能够定义数据结构并保证数据完整性。
+* **性能优化**：SurrealQL包含了特定于SurrealDB的优化，确保查询的高效执行并最小化资源使用。
+
+== 开始使用
+
+要开始使用 xref:statements/begin.adoc[SurrealQL]，请参考文档中关于各种语句类型及其语法的说明。 语句页面为每种语句类型提供了全面的例子和解释，帮助您了解如何构建查询以及如何有效地与SurrealDB交互。
+
+我们希望SurrealQL能够使您充分发挥SurrealDB的全部潜力，并使您能够构建强大且可扩展的应用程序。 让我们一起深入SurrealQL的世界，共同解锁SurrealDB的能力！
+
+== 资源
+
+要了解更多关于SurrealQL以及如何有效使用它，请查看以下资源：
+
+* xref:statements/select.adoc[Select 语句]：学习如何使用**`SELECT`**语句从您的SurrealDB数据库检索数据，并探索各种查询选项：
 

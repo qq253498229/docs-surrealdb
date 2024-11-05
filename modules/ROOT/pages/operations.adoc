@@ -1,0 +1,905 @@
+= 操作符
+
+SurrealQL中的多种操作符允许对数据进行复杂的操作和高级逻辑处理。
+
+[%autowidth]
+|===
+|操作符 |描述
+
+|`<<and,&& or AND>>`
+|检查两个值是否都是真值。
+
+|`<<or,\|\| or OR>>`
+|检查两个值中是否有任意一个是真值。
+
+|`<<not,!>>`
+|反转一个值的真值性。
+
+|`<<not_not,!!>>`
+|判断一个值的真值性。
+
+|`<<nco,??>>`
+|检查两个值中是否有任意一个为真值且不为 NULL。
+
+|`<<tco,?:>>`
+|检查两个值中是否有任意一个为真值。
+
+|`<<equal,= or IS>>`
+|检查两个值是否相等。
+
+|`<<notequal,!= or IS NOT>>`
+|检查两个值是否不相等。
+
+|`<<exact,=\=>>`
+|检查两个值是否完全相等。
+
+|`<<anyequal,?\=>>`
+|检查一组值中是否有任何值等于给定值。
+
+|`<<allequal,*\=>>`
+|检查一组值中的所有值是否都等于给定值。
+
+|`<<match,~>>`
+|使用模糊匹配比较两个值是否相等。
+
+|`<<notmatch,!~>>`
+|使用模糊匹配比较两个值是否不相等。
+
+|`<<anymatch,?~>>`
+|检查一组值中是否有任何值使用模糊匹配等于给定值。
+
+|`<<allmatch,*~>>`
+|检查一组值中的所有值是否使用模糊匹配都等于给定值。
+
+|`<<lessthan,<>>`
+|检查一个值是否小于另一个值。
+
+|`<<lessthanorequal,\<\=>>`
+|检查一个值是否小于或等于另一个值。
+
+|`<<greaterthan,>>>`
+|检查一个值是否大于另一个值。
+
+|`<<greaterthanorequal,>>`
+|检查一个值是否大于或等于另一个值。
+
+|`<<add,+>>`
+|将两个值相加。
+
+|`<<sub,\->>`
+|从一个值中减去另一个值。
+
+|`<<mul,* or ×>>`
+|将两个值相乘。
+
+|`<<div,/ or ÷>>`
+|将一个值除以另一个值。
+
+|`<<pow,**>>`
+|将一个基数值提升至另一个值的幂。
+
+|`<<inside,IN>>`
+|检查一个值是否包含在另一个值中。
+
+|`<<notinside,NOT IN>>`
+|检查一个值是否不包含在另一个值中。
+
+|`<<contains,CONTAINS or ∋>>`
+|检查一个值是否包含另一个值。
+
+|`<<containsnot,CONTAINSNOT or ∌>>`
+|检查一个值是否不包含另一个值。
+
+|`<<containsall,CONTAINSALL or ⊇>>`
+|检查一个值是否包含所有其他值。
+
+|`<<containsany,CONTAINSANY or ⊃>>`
+|检查一个值是否包含任何其他值。
+
+|`CONTAINSNONE or ⊅`
+|检查一个值是否不包含以下任何值。
+
+|`<<inside,INSIDE or ∈>>`
+|检查一个值是否包含在另一个值中。
+
+|`<<notinside,NOTINSIDE or NOT IN or ∉>>`
+|检查一个值是否不包含在另一个值中。
+
+|`<<allinside,ALLINSIDE or ⊆>>`
+|检查所有值是否包含在其他值中。
+
+|`<<anyinside,ANYINSIDE or ⊂>>`
+|检查是否有任何值包含在其他值中。
+
+|`<<noneinside,NONEINSIDE or ⊄>>`
+|检查是否有任何值不包含在其他值中。
+
+|`<<outside,OUTSIDE>>`
+|检查一个几何类型是否在另一个几何类型之外。
+
+|`<<intersects,INTERSECTS>>`
+|检查一个几何类型是否与另一个几何类型相交。
+
+|`<<matches,@@ or @[ref]@>>`
+|检查在全文索引字段中是否找到了这些术语。
+
+|``<<knn,<\|4\|> or <\|3,HAMMING\| > >>``
+|执行一个K-最近邻（KNN）搜索，以找到最接近给定数据点的指定数量的记录，可以选择使用定义的距离度量。支持自定义结果数量和距离计算方法的选择。
+
+|===
+
+[[and]]
+== && or AND
+
+检查两个值是否都是 xref:datamodel/values.adoc#values-and-truthiness[真值]。
+
+[source]
+----
+SELECT * FROM 10 AND 20 AND 30;
+
+30
+----
+
+[[or]]
+== || or OR
+
+检查两个值中是否有任意一个是 xref:datamodel/values.adoc#values-and-truthiness[真值]。
+
+[source]
+----
+SELECT * FROM 0 OR false OR 10;
+
+10
+----
+
+[[not]]
+== !
+
+反转一个值的真值性。
+
+[source]
+----
+SELECT * FROM !(TRUE OR FALSE)
+
+false
+
+SELECT * FROM !"Has a value";
+
+false
+----
+
+[[not_not]]
+== !!
+
+确定一个值的真值性（简单地应用两次！操作符）。
+
+[source]
+----
+SELECT * FROM !!"Has a value";
+
+true
+----
+
+[[nco]]
+== ??
+
+检查两个值中是否有任意一个为真值且不为 NULL。
+
+[source]
+----
+SELECT * FROM NULL ?? 0 ?? false ?? 10;
+
+0
+----
+
+[[tco]]
+== ?:
+
+检查两个值中是否有任意一个为 xref:datamodel/values.adoc#values-and-truthiness[真值]。
+
+[source]
+----
+SELECT * FROM NULL ?: 0 ?: false ?: 10;
+
+10
+----
+
+[[equal]]
+== = or IS
+
+检查两个值是否相等。
+
+[source]
+----
+SELECT * FROM true = "true";
+
+false
+----
+
+[source]
+----
+SELECT * FROM 10 = "10";
+
+false
+----
+
+[source]
+----
+SELECT * FROM 10 = 10.00;
+
+true
+----
+
+[source]
+----
+SELECT * FROM 10 = "10.3";
+
+false
+----
+
+[source]
+----
+SELECT * FROM [1, 2, 3] = [1, 2, 3];
+
+true
+----
+
+[source]
+----
+SELECT * FROM [1, 2, 3] = [1, 2, 3, 4];
+
+false
+----
+
+[source]
+----
+SELECT * FROM { this: "object" } = { this: "object" };
+
+true
+----
+
+[source]
+----
+SELECT * FROM { this: "object" } = { another: "object" };
+
+false
+----
+
+[[notequal]]
+== != or IS NOT
+
+检查两个值是否相等。
+
+[source]
+----
+SELECT * FROM 10 != "15";
+
+true
+----
+
+[source]
+----
+SELECT * FROM 10 != "test";
+
+true
+----
+
+[source]
+----
+SELECT * FROM [1, 2, 3] != [3, 4, 5];
+
+true
+----
+
+[[exact]]
+== ==
+
+检查两个值是否完全相同。此操作符还检查每个值是否具有相同的类型。
+
+[source]
+----
+SELECT * FROM 10 == 10;
+
+true
+----
+
+[source]
+----
+SELECT * FROM 10 == "10";
+
+false
+----
+
+[source]
+----
+SELECT * FROM true == "true";
+
+false
+----
+
+[[anyequal]]
+== ?=
+
+检查数组中的任意值是否等于另一个值。
+
+[source]
+----
+SELECT * FROM [10, 15, 20] ?= 10;
+
+true
+----
+
+[[allequal]]
+== *=
+
+检查数组中的所有值是否等于另一个值。
+
+[source]
+----
+SELECT * FROM [10, 10, 10] *= 10;
+
+true
+----
+
+[[match]]
+== ~
+
+使用模糊匹配比较两个值是否相等。
+
+[source]
+----
+SELECT * FROM "test text" ~ "Test";
+
+true
+----
+
+[source]
+----
+SELECT * FROM "true" ~ true;
+
+false
+----
+
+[source]
+----
+SELECT * FROM ["test", "thing"] ~ "test";
+
+false
+----
+
+[[notmatch]]
+== !~
+
+使用模糊匹配比较两个值是否不相等。
+
+[source]
+----
+SELECT * FROM "other text" !~ "test";
+
+true
+----
+
+[source]
+----
+SELECT * FROM "test text" !~ "Test";
+
+false
+----
+
+[[anymatch]]
+== ?~
+
+检查一组值中是否有任何值使用模糊匹配等于给定值。
+
+[source]
+----
+SELECT * FROM ["true", "test", "text"] ?~ true;
+
+false
+----
+
+[source]
+----
+SELECT * FROM [1, 2, 3] ?~ "2";
+
+false
+----
+
+[[allmatch]]
+== *~
+
+检查一组值中的所有值是否使用模糊匹配都等于给定值。
+
+[source]
+----
+SELECT * FROM ["TRUE", true, "true", "TrUe"] *~ true;
+
+false
+----
+
+[source]
+----
+SELECT * FROM ["TEST", "test", "text"] *~ "test";
+
+false
+----
+
+[[lessthan]]
+== <
+
+检查一个值是否小于另一个值。
+
+[source]
+----
+SELECT * FROM 10 < 15;
+
+true
+----
+
+[[lessthanorequal]]
+== <=
+
+检查一个值是否小于或等于另一个值。
+
+[source]
+----
+SELECT * FROM 10 <= 15;
+
+true
+----
+
+[[greaterthan]]
+== >
+
+检查一个值是否小于另一个值。
+
+[source]
+----
+SELECT * FROM 15 > 10;
+
+true
+----
+
+[[greaterthanorequal]]
+== >=
+
+检查一个值是否小于或等于另一个值。
+
+[source]
+----
+SELECT * FROM 15 >= 10;
+
+true
+----
+
+[[add]]
+== +
+
+将两个值相加。
+
+[source]
+----
+SELECT * FROM 10 + 10;
+
+20
+----
+
+[source]
+----
+SELECT * FROM "test" + " " + "this";
+
+"test this"
+----
+
+[source]
+----
+SELECT * FROM 13h + 30m;
+
+"13h30m"
+----
+
+[[sub]]
+== -
+
+从一个值中减去另一个值。
+
+[source]
+----
+SELECT * FROM 20 - 10;
+
+10
+----
+
+[source]
+----
+SELECT * FROM 2m - 1m;
+
+"1m"
+----
+
+[[mul]]
+== * or ×
+
+将一个值乘以另一个值。
+
+[source]
+----
+SELECT * FROM 20 * 2;
+
+40
+----
+
+[[div]]
+== / or ÷
+
+将一个值除以另一个值。
+
+[source]
+----
+SELECT * FROM 20 / 2;
+
+10
+----
+
+[[pow]]
+== **
+
+将一个基数值提升到另一个值的幂。
+
+[source]
+----
+SELECT * FROM 20 ** 3;
+
+8000
+----
+
+[[contains]]
+== CONTAINS or ∋
+
+检查一个值是否包含另一个值。
+
+[source]
+----
+SELECT * FROM [10, 20, 30] CONTAINS 10;
+
+true
+----
+
+[source]
+----
+SELECT * FROM "this is some text" CONTAINS "text";
+
+true
+----
+
+[source]
+----
+SELECT * FROM {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+} CONTAINS (-0.118092, 51.509865);
+
+true
+----
+
+[[containsnot]]
+== CONTAINSNOT or ∌
+
+检查一个值是否不包含另一个值。
+
+[source]
+----
+SELECT * FROM [10, 20, 30] CONTAINSNOT 15;
+
+true
+----
+
+[source]
+----
+SELECT * FROM "this is some text" CONTAINSNOT "other";
+
+true
+----
+
+[source]
+----
+SELECT * FROM {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+} CONTAINSNOT (-0.518092, 53.509865);
+
+true
+----
+
+[[containsall]]
+== CONTAINSALL or ⊇
+
+检查一个值是否包含多个值的全部。
+
+[source]
+----
+SELECT * FROM [10, 20, 30] CONTAINSALL [10, 20, 10];
+
+true
+----
+
+[[containsany]]
+== CONTAINSANY or ⊃
+
+检查一个值是否包含多个值中的任何一个。
+
+[source]
+----
+SELECT * FROM [10, 20, 30] CONTAINSANY [10, 15, 25];
+
+true
+----
+
+[[inside]]
+== INSIDE or ∈ or IN
+
+检查一个值是否被另一个值包含。
+
+[source]
+----
+SELECT * FROM 10 INSIDE [10, 20, 30];
+
+true
+----
+
+[source]
+----
+SELECT * FROM "text" INSIDE "this is some text";
+
+true
+----
+
+[source]
+----
+SELECT * FROM (-0.118092, 51.509865) INSIDE {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+};
+
+true
+----
+
+[[notinside]]
+== NOTINSIDE or ∉ or NOT IN
+
+检查一个值是否不被另一个值包含。
+
+[source]
+----
+SELECT * FROM 15 NOTINSIDE [10, 20, 30];
+
+true
+----
+
+[source]
+----
+SELECT * FROM "other" NOTINSIDE "this is some text";
+
+true
+----
+
+[source]
+----
+SELECT * FROM (-0.518092, 53.509865) NOTINSIDE {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+};
+
+true
+----
+
+[[allinside]]
+== ALLINSIDE or ⊆
+
+检查多个值中的所有值是否被另一个值包含。
+
+[source]
+----
+SELECT * FROM [10, 20, 10] ALLINSIDE [10, 20, 30];
+
+true
+----
+
+[[anyinside]]
+== ANYINSIDE or ⊂
+
+检查多个值中的任何一个是否被另一个值包含。
+
+[source]
+----
+SELECT * FROM [10, 15, 25] ANYINSIDE [10, 20, 30];
+
+true
+----
+
+[[noneinside]]
+== NONEINSIDE or ⊄
+
+检查多个值中的任何一个是否不被另一个值包含。
+
+[source]
+----
+SELECT * FROM [15, 25, 35] NONEINSIDE [10, 20, 30];
+
+true
+----
+
+[[outside]]
+== OUTSIDE
+
+检查一个几何值是否在另一个几何值的外部。
+
+[source]
+----
+SELECT * FROM (-0.518092, 53.509865) OUTSIDE {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+};
+
+true
+----
+
+[[intersects]]
+== INTERSECTS
+
+检查一个几何值是否与另一个几何值相交。
+
+[source]
+----
+SELECT * FROM {
+	type: "Polygon",
+	coordinates: [[
+		[-0.38314819, 51.37692386], [0.1785278, 51.37692386],
+		[0.1785278, 51.61460570], [-0.38314819, 51.61460570],
+		[-0.38314819, 51.37692386]
+	]]
+} INTERSECTS {
+	type: "Polygon",
+	coordinates: [[
+		[-0.11123657, 51.53160074], [-0.16925811, 51.51921169],
+		[-0.11466979, 51.48223813], [-0.07381439, 51.51322956],
+		[-0.11123657, 51.53160074]
+	]]
+};
+
+true
+----
+
+[[matches]]
+== MATCHES
+
+检查全文索引字段中是否找到了这些术语。
+
+[source]
+----
+SELECT * FROM book WHERE title @@ 'rust web';
+
+
+[
+	{
+		id: book:1,
+		title: 'Rust Web Programming'
+	}
+]
+----
+
+使用匹配操作符和参考，检查是否找到了术语，突出显示搜索的术语，并计算全文分数。
+
+[source]
+----
+SELECT id,
+		search::highlight('<b>', '</b>', 1) AS title,
+		search::score(1) AS score
+FROM book
+WHERE title @1@ 'rust web'
+ORDER BY score DESC;
+
+[
+	{
+		id: book:1,
+		score: 0.9227996468544006f,
+		title: '<b>Rust</b> <b>Web</b> Programming'
+	}
+]
+----
+
+[[knn]]
+== #KNN
+
+K-最近邻（KNN）是一种基于特征空间中最近的数据点进行分类或回归的基本算法，其在涉及大型数据集的应用中的性能和可扩展性至关重要。
+
+在实践中，KNN算法的效率和可扩展性非常关键，尤其是在处理大型数据集时。KNN的不同实现旨在优化这些方面，同时不牺牲结果的准确性。
+
+SurrealDB 支持不同的K-最近邻方法来执行KNN搜索，每种方法都有其独特的语法要求。以下是每种方法的详细信息，包括如何格式化查询的示例：
+
+[[brute-force-method]]
+=== Brute Force Method
+
+最适合小型数据集或当需要最高准确度时。
+
+.SurrealQL Syntax
+[source]
+----
+<|K,DISTANCE_METRIC|>
+----
+
+* K：要检索的最近邻居的数量。
+* DISTANCE_METRIC：用于计算距离的度量标准，例如欧几里得（EUCLIDEAN）或曼哈顿（MANHATTAN）。
+
+[source]
+----
+CREATE pts:3 SET point = [8,9,10,11];
+SELECT id FROM pts WHERE point <|2,EUCLIDEAN|> [2,3,4,5];
+----
+
+[[mtree-index-method]]
+=== MTREE Index Method
+
+适用于大型数据集，当性能至关重要且可以预定义一致的距离度量标准时。
+
+.SurrealQL Syntax
+[source]
+----
+<|K|>
+----
+
+* K：最近邻居的数量。距离度量标准在索引中预定义，简化了语法。
+
+[source]
+----
+CREATE pts:3 SET point = [8,9,10,11];
+DEFINE INDEX mt_pts ON pts FIELDS point MTREE DIMENSION 4 DIST EUCLIDEAN;
+SELECT id FROM pts WHERE point <|2|> [2,3,4,5];
+----
+
+[[hnsw-method]]
+=== HNSW Method
+
+推荐用于非常大的数据集，当速度至关重要且可以接受一定程度的准确性损失时。
+
+.SurrealQL Syntax
+[source]
+----
+<|K,EF|>
+----
+
+* K：最近邻居的数量。
+* EF（Effective Number）：搜索过程中动态候选列表的大小，影响搜索的准确性和速度。
+
+[source]
+----
+CREATE pts:3 SET point = [8,9,10,11];
+DEFINE INDEX mt_pts ON pts FIELDS point HNSW DIMENSION 4 DIST EUCLIDEAN EFC 150 M 12;
+SELECT id FROM pts WHERE point <|10,40|> [2,3,4,5];
+----
+
+
+
+
+
+

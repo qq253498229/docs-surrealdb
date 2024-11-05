@@ -1,10 +1,10 @@
 site:
-  title: SurrealDB文档
-  start_page: docs-surrealdb::index.adoc
+  title: SurrealQL文档
+  start_page: docs-surrealql::index.adoc
 content:
   sources:
-    - url: https://github.com/qq253498229/docs-surrealdb.git
-      branches: [HEAD]
+    - url: .
+      branches: [master,HEAD]
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable

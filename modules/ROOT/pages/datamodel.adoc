@@ -1,0 +1,116 @@
+= 数据类型
+
+SurrealQL 允许您用特定的数据类型来描述数据。这些数据类型用于验证数据并生成适当的数据库模式。
+
+[%autowidth]
+|===
+|类型 |描述
+|`any`
+|当您明确不想指定字段的数据类型时，请使用这个。该字段将允许任何 SurrealDB 支持的数据类型。
+
+|`array`
+|一个项目的数组。数组类型还允许您定义可以存储在数组中的类型以及最大长度。 +
+* `array` +
+* `array<string>` +
+* `array<string, 10>`
+
+|`bool`
+|描述某物是否为真值（truthy）或非真值（falsy）。
+
+|`<<bytes>>`
+|将值存储在字节数组中。 +
+* `<bytes>value` +
+* `bytes
+
+|`datetime`
+|符合ISO 8601标准的日期类型，用于存储带有时间和时区的日期。
+
+|`decimal`
+|使用BigDecimal存储具有任意精度的任何实数。
+
+|`duration`
+|存储表示一段时间长度的值。可以从日期时间或其他持续时间中加或减。
+
+|`float`
+|在64位浮点数中存储一个值。
+
+|`<<geometry>>`
+|符合 link:https://www.rfc-editor.org/rfc/rfc7946[RFC 7946,window=_blank]标准的用于存储 link:https://geojson.org/[GeoJson格式,window=_blank] 几何体的数据类型。 +
+* `geometry<feature>` +
+* `geometry<point>` +
+* `geometry<LineString>` +
+* `geometry<polygon>` +
+* `geometry<multipoint>` +
+* `geometry<multiline>` +
+* `geometry<multipolygon>` +
+* `geometry<collection>`
+
+|`int`
+|在64位整数中存储一个值。
+
+|`number`
+|无需指定类型即可存储数字。SurrealDB将检测数字的类型，并使用最少的字节数进行存储。对于以字符串形式传入的数字，此字段将使用BigDecimal存储该数字。
+
+|`object`
+|存储包含任何支持类型的值的格式化对象，对象深度或嵌套没有限制。
+
+|`xref:datamodel/literal.adoc[literal]`
+|可能具有多种表示或格式的值，类似于枚举或联合类型。可以由字符串、数字、对象、数组或持续时间组成。 +
+* ``”a” \| “b”`` +
+* ``[number, “abc”]`` +
+* ``123 \| 456 \| string \| 1y1m1d``
+
+|`option`
+|使类型变为可选，并保证字段要么是空的（NONE），要么是一个数字。 +
+* ``option<number>``
+
+|`range`
+|可能值的范围。可以设置下限和上限，如果没有设置，则范围变为无限制的。整数范围可以在FOR循环中使用。 +
+* ``0..10`` +
+* ``0..=10`` +
+* ``..10`` +
+* ``‘a’..‘z’``
+
+|`record`
+|存储对另一条记录的引用。该值必须是一个记录ID。在尖括号内添加记录名称，可以限制引用仅限于某些特定的记录名称。 +
+* ``record`` +
+* ``record<user>`` +
+* ``record<user \| administrator>``
+
+|`set`
+|存储一组项目。集合类型还允许您定义可以存储在集合中的类型以及最大长度。项目会自动去重。 +
+* ``set`` +
+* ``set<string>`` +
+* ``set<string, 10>``
+
+|`string`
+|描述一个类似文本的值。
+
+|===
+
+== 示例
+
+[[geometry]]
+=== geometry
+
+[source]
+----
+-- Define a field with a single type
+DEFINE FIELD location ON TABLE restaurant TYPE geometry<point>;
+-- Define a field with any geometric type
+DEFINE FIELD area ON TABLE restaurant TYPE geometry<feature>;
+-- Define a field with specific geometric types
+DEFINE FIELD area ON TABLE restaurant TYPE geometry<polygon|multipolygon|collection>;
+----
+
+[[bytes]]
+=== bytes
+
+[source]
+----
+-- Define a field with a single type
+DEFINE FIELD image ON TABLE product TYPE bytes;
+
+-- Create a record with a bytes field and set the value
+CREATE foo SET value = <bytes>"bar";
+----

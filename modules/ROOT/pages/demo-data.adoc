@@ -1,0 +1,93 @@
+= 演示数据
+
+为了快速测试SurrealDB和SurrealQL的功能，我们在这里提供了两个``.surql``文件格式的演示数据集，您可以下载并使用CLI**导入**到SurrealDB中。
+
+== Surreal Deal Store - 为您准备了许多惊喜！
+
+Surreal Deal Store是基于我们的 link:https://surrealdb.store/[SurrealDB Store,window=_blank]的新改进的演示数据集。该数据集由12个表格组成，使用了 xref:statements/relate.adoc[图形关系]和 xref:datamodel/records.adoc[记录链接]。
+
+在下面的图表中，粉红色的节点是 xref:statements/define/table.adoc[标准表格]，紫色的节点代表 xref:statements/relate.adoc[关联表格]，显示了记录之间的关系，SurrealDB作为一个图形数据库。而灰色的节点是 xref:statements/define/table.adoc[预计算的表格视图]。
+
+image::https://surrealdb.com/docs/_astro/surreal-deal-store.CugetXBd_Z264TCN.webp[]
+
+[[download]]
+=== 下载
+
+|===
+|数据集 |URL
+
+|https://datasets.surrealdb.com/surreal-deal-store.surql[Surreal Deal Store,window=_blank]
+|https://datasets.surrealdb.com/surreal-deal-store.surql[window=_blank]
+
+|https://datasets.surrealdb.com/surreal-deal-store-mini.surql[Surreal Deal Store (mini),window=_blank]
+|https://datasets.surrealdb.com/surreal-deal-store-mini.surql[window=_blank]
+|===
+
+=== 导入
+
+首先，下载任何 <<download,可用的数据集>>。
+
+其次，启动服务器。
+
+[source,bash]
+----
+# 创建一个内存级服务器
+surreal start --user root --pass root --allow-all
+----
+
+最后，使用导入命令来添加数据集。
+
+使用以下命令导入 link:https://datasets.surrealdb.com/surreal-deal-store.surql[Surreal Deal Store数据集,window=_blank]：
+
+[source,bash]
+----
+surreal import --conn http://localhost:8000 --user root --pass root --ns test --db test surreal-deal-store.surql
+----
+
+要导入下载的 link:https://datasets.surrealdb.com/surreal-deal-store-mini.surql[Surreal Deal Store（迷你版）,window=_blank]，请使用以下命令：
+
+[source,bash]
+----
+surreal import --conn http://localhost:8000 --user root --pass root --ns test --db test surreal-deal-store-mini.surql
+----
+
+请注意，导入过程可能需要几秒钟。
+
+=== 使用Curl
+
+首先，启动SurrealDB服务器：
+
+[source,bash]
+----
+surreal start --user root --pass root --allow-all
+----
+
+然后，下载文件并将其加载到数据库中：
+
+[source,bash]
+----
+# 下载文件
+curl -L "https://datasets.surrealdb.com/surreal-deal-store.surql" -o surreal-deal-store.surql
+
+# 使用REST端点将文件加载到数据库
+curl -v -X POST -u "root:root" -H "NS: test" -H "DB: test" -H "Accept: application/json" --data-binary @surreal-deal-store.surql http://localhost:8000/import
+----
+
+如果您想使用迷你版本：
+
+[source,bash]
+----
+# 下载文件
+curl -L "https://datasets.surrealdb.com/surreal-deal-store-mini.surql" -o surreal-deal-store-mini.surql
+
+# 使用REST端点将文件加载到数据库
+curl -v -X POST -u "root:root" -H "NS: test" -H "DB: test" -H "Accept: application/json" --data-binary @surreal-deal-store-mini.surql http://localhost:8000/import
+----
+
+=== 演示查询
+
+以下是您可以在Surreal Deal Store数据集上运行的一些样本查询。我们还包含了一个 link:https://surrealist.app/mini[Surrealist Mini,window=_blank]，以帮助您运行这些查询。
+
+NOTE: 下面的查询结果已限制为4行，以保持简洁。如果您从查询中移除 `LIMIT 4` 子句，您将看到完整的结果。
+
+link:https://surrealist.app/mini?query=--+Query+1%3A+Using+record+links+to+select+from+the+seller+table+%0ASELECT%0A++name%2C%0A++seller.name%0AFROM+product+LIMIT+4%3B%0A%0A%0A--+Query+2%3A+Using+graph+relations+to+select+from+the+person+and+product+table%0ASELECT%0A++++time.created_at+as+order_date%2C%0A++++product_name%2C%0A++++%3C-person.name+as+person_name%2C%0A++++-%3Eproduct.details%0AFROM+order+LIMIT+4%3B%0A%0A%0A--+Query+3%3A+Conditional+filtering+based+on+an+embedded+object+property.%0ASELECT+%0A++name%2C%0A++email+%0AFROM+person+%0AWHERE+address.country+%3F%3D+%22England%22+LIMIT+4%3B%09%0A%0A%0A--+Query+4%3A+Conditional+filtering+using+record+links.%0ASELECT+*+FROM+review%0AWHERE+-%3Eproduct.sub_category+%3F%3D+%22Activewear%22+LIMIT+4%3B%0A%0A%0A--+Query+5%3A+Count+orders+based+on+order+status%0ASELECT+count%28%29+FROM+order%0AWHERE+order_status+IN+%5B+%22processed%22%2C+%22shipped%22%5D%0AGROUP+ALL+LIMIT+4%3B%0A%0A%0A--+Query+6%3A+Get+a+deduplicated+list+of+products+that+were+ordered%0ASELECT+%0A++++array%3A%3Adistinct%28product_name%29+as+ordered_products%0AFROM+order%0AGROUP+ALL+LIMIT+4%3B%0A%0A%0A--+Query+7%3A+Get+the+average+price+per+product+category%0ASELECT+%0A++++-%3Eproduct.category+AS+product_category%2C%0A++++math%3A%3Amean%28price%29+AS+avg_price%0AFROM+order%0AGROUP+BY+product_category%0AORDER+BY+avg_price+DESC+LIMIT+4%3B%0A%0A%0A--+Query+8%3A+encapsulating+logic+in+a+function%0ARETURN+fn%3A%3Anumber_of_unfulfilled_orders%28%29%3B%0A%0A%0A--+Query+9%3A+using+a+custom+fuction+for+currency+conversion%0ASELECT+%0A++++product_name%2C%0A++++fn%3A%3Apound_to_usd%28price%29+AS+price_usd%0AFROM+order+LIMIT+4%3B&dataset=surreal-deal-store&orientation=horizontal&compact=true&theme=auto[点击跳转,window=_blank]

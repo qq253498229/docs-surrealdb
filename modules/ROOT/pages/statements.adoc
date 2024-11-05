@@ -1,0 +1,13 @@
+== 声明
+
+SurrealDB 提供了多种声明，让您可以配置和查询数据库：`CREATE`（创建）、`INSERT`（插入）、`UPDATE`（更新）等。
+
+== 声明参数
+
+在声明中，一些以 `$` 开头的参数会自动提供，让您能够访问声明内部的相关上下文。这些被称为保留变量名。例如：
+
+* 在修改值的声明中，`xref:parameters.adoc#before-after[$before]` 和 `xref:parameters.adoc#before-after[$after]` 可以被访问，以查看更新前后的值。
+* `xref:parameters.adoc#session[$session]` 提供了关于当前会话的上下文。
+* `xref:parameters.adoc#parent-this[$parent]` 在子查询中提供对主查询值的访问。
+
+有关这些自动生成参数的完整列表，请查看 `xref:parameters.adoc#reserved-variable-names[参数]` 页面。
