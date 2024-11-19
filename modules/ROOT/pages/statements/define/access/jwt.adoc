@@ -1,0 +1,292 @@
+= `DEFINE ACCESS ... TYPE JWT`
+
+JWT 访问方法允许使用由可信发行者签名的令牌访问 SurrealDB。只要令牌是用可信凭证签名的，SurrealDB就会信任令牌的内容。
+
+SurrealDB 可以与第三方认证提供者一起工作，比如 OpenID Connect 提供者、OAuth 提供者以及其他提供 JWT（JSON Web Tokens，本页面中也称为“令牌”）的可信方。假设您的提供者在您的客户端（例如用户或服务）认证后发行了一个 JWT。通过使用 `DEFINE ACCESS ... TYPE JWT` 语句，您可以设置用于验证令牌真实性的公钥或共享密钥。
+
+当通过 SurrealDB 的任何接口（即通过 link:https://surrealdb.com/docs/surrealdb/integration/http[HTTP REST API] 的“Authorization”头部或 link:https://surrealdb.com/docs/surrealdb/integration/sdks[任何 SDK] 通过“Authenticate”方法）提供 JWT 时，SurrealDB 会自动执行此验证，然后才会信任令牌中的声明并允许 SurrealQL 查询访问这些声明的值。
+
+请注意，表和字段权限仅适用于 link:https://surrealdb.com/docs/surrealdb/security/authentication#record-users[记录用户]，这些用户必须使用通过 `RECORD` 访问方法验证的令牌。在 `JWT` 访问方法中定义的命名空间和数据库令牌提供的访问权限等同于 link:https://surrealdb.com/docs/surrealdb/security/authentication#system-users[系统用户] 的访问权限，高于细粒度权限。当应用程序用户将直接使用 `JWT` 进行认证时，定义一个带有 JWT 的 `RECORD` 访问方法很可能是正确的选择。
+
+== 需求
+
+* 您必须作为 link:https://surrealdb.com/docs/surrealdb/security/authentication#system-users[系统用户] 进行身份验证，且您的级别必须与您想要提供的 JWT 访问权限的级别相同或更高。
+* 在定义 JWT 访问方法之前，xref:statements/use.adoc[您必须选择一个命名空间或数据库]。
+
+== 语句语法
+
+.SurrealQL语法
+[source,sql]
+----
+DEFINE ACCESS [ OVERWRITE | IF NOT EXISTS ] @name
+  ON [ ROOT | NAMESPACE | DATABASE ]
+  TYPE JWT [ ALGORITHM @algorithm KEY @key | URL @url ]
+  [ AUTHENTICATE @expression ]
+  [ DURATION FOR SESSION @duration ]
+----
+
+== 验证类型
+
+在定义一个令牌时，其类型描述了将用于验证令牌的加密算法或规范。这可以是 HMAC 算法、公钥加密算法或包含所有所需信息以验证令牌的远程 JWKS 对象。如果没有指定，类型被定义为 `HS256` HMAC 加密算法。
+
+=== 基于哈希的消息认证码（HMAC）
+
+使用 HMAC 算法（`HS256`、`HS384`、`HS512`），定义的令牌的值将是用于签署（由令牌发行者）和验证（由 SurrealDB）令牌的秘密。任何拥有此秘密的人都可以发行带有任意声明的令牌，这些令牌将被 SurrealDB 信任。
+
+以下示例展示了使用 HMAC 算法定义令牌的方式。
+
+[source,sql]
+----
+-- Specify the namespace and database for the token
+USE NS abcum DB app_vitalsense;
+
+-- Set the name of the token
+DEFINE ACCESS token_name
+  -- Use this token provider for database authentication
+  ON DATABASE
+  -- Specify the type of access being defined
+  TYPE JWT
+  -- Specify the cryptographic signature algorithm used to verify the token
+  ALGORITHM HS512
+  -- Specify the symmetric key used to sign and verify the authenticity of the token
+  KEY "sNSYneezcr8kqphfOC6NwwraUHJCVAt0XjsRSNmssBaBRh3WyMa9TRfq8ST7fsU2H2kGiOpU4GbAF1bCiXmM1b3JGgleBzz7rsrz6VvYEM4q3CLkcO8CMBIlhwhzWmy8"
+;
+----
+
+=== 公钥加密
+
+使用公钥加密算法（`EDDSA`、`ES256`、`ES384`、`ES512`、`PS256`、`PS384`、`PS512`、`RS256`、`RS384`、`RS512`），定义的令牌的值将是用于验证令牌签名的公钥。这个值不是秘密，应由令牌发行者提供。令牌将使用只有发行者知道的私钥进行签名。应向 SurrealDB 提供包括其头部和尾部的公钥值。任何空白将被剔除。
+
+以下示例展示了使用公钥加密算法定义令牌的方式。
+
+[source,sql]
+----
+-- Specify the namespace and database for the token
+USE NS abcum DB app_vitalsense;
+
+-- Set the name of the token
+DEFINE ACCESS token_name
+  -- Use this token provider for database authentication
+  ON DATABASE
+  -- Specify the type of access being defined
+  TYPE JWT
+  -- Specify the cryptographic signature algorithm used to verify the token
+  ALGORITHM RS256
+  -- Specify the public key used to verify the authenticity of the token
+  KEY "-----BEGIN PUBLIC KEY-----
+MUO52Me9HEB4ZyU+7xmDpnixzA/CUE7kyUuE0b7t38oCh+sQouREqIjLwgHhFdhh3cQAwr6GH07D
+ThioYrZL8xATJ3Youyj8C45QnZcGUif5PkpWXDi0HJSoMFekbW6Pr4xuqIqb2LGxGDVJcLZwJ2AS
+Gtu2UAfPXbBD3ffiad393M22g1iHM80YaNi+xgswG7qtXE4lR/Lt4s0MeKKX7stdWI1VIsoB+y3i
+r/OWUvJPjjDNbAsyy8tQmxydv+FUnLEP9TNT4AhN4DXcJ+XsDtW7OWt4EdSVDeKpGbIMvIrh1Pe+
+Nilj8UHNyNDHa2AjK3seMo6CMvaIQJKj5o4xGFblFGwvvPD03SbuQLs1FdRjsZCeWLdYeQ3JDHE9
+sFG7DCXlpMJcaYT1mf4XHJ0gPekNLQyewTY3Vxf7FgV3GCNjV20kcDFgJA2+iVW2wSrb+txD1ycE
+kbi8jh0pedWwE40VQWaTh/8eAvX7IHWya/AEro25mq+m6vktNZLbvLphhp586kJK3Tdt3YjpkPre
+M3nkFWOWurIyKbtIV9JemfwCgt89sNV45dTlnEDEZFFGnIgDnWgx3CUo4XmhICEQU8+tklw9jJYx
+iCTjhbIDEBHySSSc/pQ4ftHQmhToTlQeOdEy4LYiaEIgl1X+hzRH1hBYvWlNKe4EY1nMCKcjgt0=
+-----END PUBLIC KEY-----"
+;
+----
+
+[[json-web-key-set-jwks]]
+=== JSON Web 密钥集（JWKS）
+
+使用 JWKS，将从远程位置动态获取一组 JWK（JSON Web 密钥）对象，并用于根据 link:https://datatracker.ietf.org/doc/html/rfc7517[RFC 7517] 规范验证令牌。 在定义 JWKS 令牌验证方法时，其值应包含 SurrealDB 可以访问且网络 link:https://surrealdb.com/docs/surrealdb/security/capabilities[配置] 允许的有效 URL。 此 URL 应指向一个有效的 JWKS 对象（如 link:https://datatracker.ietf.org/doc/html/rfc7517#section-5[RFC 7517 第 5 节]所述）的 JSON 文档。 这是与支持 JWKS 的认证提供商集成的推荐方法。 像 link:https://developers.google.com/identity/openid-connect/openid-connect#discovery[Google]、link:https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html#amazon-cognito-user-pools-using-tokens-manually-inspect[AWS Cognito]、link:https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer/jwks.html[Azure Active Directory]、link:https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets[Auth0]、link:https://documentation.cloud-iam.com/how-to-guides/configure-remote-jkws.html[Keycloak] 或 link:https://developers.onelogin.com/authentication/tools/jwt[OneLogin] 这样的提供商提供 JWKS 端点来验证其服务发行的令牌。
+
+NOTE: 由于 JWKS 功能需要建立网络连接以下载 JWKS 对象，因此你需要在具有网络 link:https://surrealdb.com/docs/security/capabilities[能力] 的 SurrealDB 服务器上运行。为了最强的安全性，在启动 SurrealDB 时使用 `—allow-net` 提供托管 JWKS 对象的具体主机名。例如：`—allow-net example.com`。
+
+以下示例展示了使用 JWKS 定义令牌的方式。
+
+[source,sql]
+----
+-- Specify the namespace and database for the token
+USE NS abcum DB app_vitalsense;
+
+-- Set the name of the token
+DEFINE ACCESS token_name
+  -- Use this token provider for database authentication
+  ON DATABASE
+  -- Specify the type of access being defined
+  TYPE JWT
+  -- Specify the URL where the JWKS object can be found
+  URL "https://example.com/.well-known/jwks.json"
+;
+----
+
+使用 JWKS 验证第三方认证提供商生成的令牌，确保可以直接从第三方服务中撤销密钥，并且在本地缓存这些密钥过期后，SurrealDB 将不再接受它们。同样，它确保如果密钥轮换，令牌验证不会中断，因为如果收到的 JWT 包含其 `kid` 头部中的新密钥标识符，任何新密钥将自动从认证提供商处获取。
+
+为了避免在验证每个令牌时都对远程 URL 进行请求，SurrealDB 缓存它提取的每个 JWKS 对象，持续时间为 12 小时。缓存可以提前清除（例如，在密钥被泄露的情况下）通过重启 SurrealDB 服务器。如果收到的 JWT 包含其 `kid` 头部中的新密钥标识符的引用，JWKS 对象将再次被获取，并在远程 JWKS 对象中找到密钥标识符时更新缓存；此操作将每 5 分钟执行一次，以防止恶意行为者滥用此过程进行拒绝服务攻击。
+
+== 使用令牌
+
+`DEFINE ACCESS ... TYPE JWT` 语句允许你指定你想要给予令牌发行者的权限授权数量。你可以指定提供者是否可以授予令牌持有者命名空间或数据库访问权限。为此，要与 SurrealDB 一起使用的 JWT 必须包含声明，以指定令牌持有者被授权操作的命名空间或数据库。
+
+令牌发行者应在 JWT 负载中添加以下声明：
+
+* `exp`：令牌过期的 Unix 时间。令牌在此之后将无效。
+* `ac`：用于验证令牌的访问方法的名称。
+* `ns`：令牌发行的命名空间。
+* `db`：令牌发行的数据库。
+
+这些声明的名称可以全部小写（即 `ac`）或全部大写（即 `AC`），并且可以可选地以 `https://surrealdb.com` 命名空间开头（例如 `https://surrealdb.com/ac` ），以将针对 SurrealDB 的声明与针对其他服务的声明分开。当使用命名空间时，声明名称也可以不使用缩写，例如在 `https://surrealdb.com/access`、`https://surrealdb.com/database` 中...
+
+以下可选声明也由 SurrealDB 处理：
+
+* `id`：与令牌关联的资源（例如用户）的标识符。
+* `nbf`：令牌接受的 Unix 时间。令牌在此之前将无效。
+
+预期的声明取决于令牌定义的级别：
+
+* 对于在 `ROOT` 上定义的令牌：`exp`、`ac`。
+* 对于在 `NAMESPACE` 上定义的令牌：`exp`、`ac`、`ns`。
+* 对于在 `DATABASE` 上定义的令牌：`exp`、`ac`、`ns`、`db`。
+
+对于 link:https://surrealdb.com/docs/surrealdb/security/authentication#system-users[系统用户] 定义的令牌，可以提供可选的 `rl` 声明，其中包含大写 xref:statements/define/user.adoc#roles[系统用户角色] 的数组（例如 `["Viewer", "Editor", "Owner"]`）。这样做将把那些角色的访问策略应用到使用令牌执行的任何操作。默认情况下，没有 `rl` 声明的令牌建立的会话只有 `Viewer` 角色。
+
+当使用 JWT 调用 SurrealDB 接口时，SurrealQL 查询将能够通过 `$token` 变量访问令牌中的声明。例如，如果令牌包含自定义声明如 “name” 或 “email”，则可以通过 `$token.name` 和 `$token.email` 访问这些声明的值。
+
+令牌的签名是使用创建令牌时定义的方法进行验证的。如果令牌的签名无效，使用该令牌调用 SurrealDB 接口将失败。
+
+=== Root
+
+根令牌可以用来选择、创建、更新和删除所有命名空间中所有数据库的所有表，以及在 SurrealDB 实例中定义和移除命名空间和数据库。
+
+[source,sql]
+----
+-- Set the name of the token
+DEFINE ACCESS token_name
+  -- Use this token provider for root authentication
+  ON ROOT
+  -- Specify the type of access being defined
+  TYPE JWT
+  -- Specify the cryptographic signature algorithm used to verify the token
+  ALGORITHM HS512
+  -- Specify the symmetric key used to sign and verify the authenticity of the token
+  KEY "sNSYneezcr8kqphfOC6NwwraUHJCVAt0XjsRSNmssBaBRh3WyMa9TRfq8ST7fsU2H2kGiOpU4GbAF1bCiXmM1b3JGgleBzz7rsrz6VvYEM4q3CLkcO8CMBIlhwhzWmy8"
+;
+----
+
+在使用root令牌与 SurrealDB 进行身份验证时，根令牌的有效载荷应至少包含以下声明。
+
+.JWT Payload
+[source,sql]
+----
+{
+  "exp": 2147483647,
+  "ac": "token_name",
+}
+----
+
+=== Namespace
+
+命名空间令牌可以用来选择、创建、更新和删除所有数据库中的所有表，以及在命名空间中定义和移除数据库和表。
+
+[source,sql]
+----
+-- Specify the namespace for the token
+USE NS abcum;
+
+-- Set the name of the token
+DEFINE ACCESS token_name
+  -- Use this token provider for namespace authentication
+  ON NAMESPACE
+  -- Specify the type of access being defined
+  TYPE JWT
+  -- Specify the cryptographic signature algorithm used to verify the token
+  ALGORITHM HS512
+  -- Specify the symmetric key used to sign and verify the authenticity of the token
+  KEY "sNSYneezcr8kqphfOC6NwwraUHJCVAt0XjsRSNmssBaBRh3WyMa9TRfq8ST7fsU2H2kGiOpU4GbAF1bCiXmM1b3JGgleBzz7rsrz6VvYEM4q3CLkcO8CMBIlhwhzWmy8"
+;
+----
+
+在使用命名空间令牌与 SurrealDB 进行身份验证时，命名空间令牌的有效载荷应至少包含以下声明。
+
+.JWT Payload
+[source,sql]
+----
+{
+  "exp": 2147483647,
+  "ac": "token_name",
+  "ns": "abcum"
+}
+----
+
+=== Database
+
+数据库令牌可以用来选择、创建、更新和删除特定数据库中的所有表，以及从数据库中定义和移除表。
+
+[source,sql]
+----
+-- Specify the namespace and database for the token
+USE NS abcum DB app_vitalsense;
+
+-- Set the name of the token
+DEFINE ACCESS token_name
+  -- Use this token provider for database authentication
+  ON DATABASE
+  -- Specify the type of access being defined
+  TYPE JWT
+  -- Specify the cryptographic signature algorithm used to verify the token
+  ALGORITHM HS512
+  -- Specify the symmetric key used to sign and verify the authenticity of the token
+  KEY "sNSYneezcr8kqphfOC6NwwraUHJCVAt0XjsRSNmssBaBRh3WyMa9TRfq8ST7fsU2H2kGiOpU4GbAF1bCiXmM1b3JGgleBzz7rsrz6VvYEM4q3CLkcO8CMBIlhwhzWmy8"
+;
+----
+
+在使用数据库令牌与 SurrealDB 进行身份验证时，数据库令牌的有效载荷应至少包含以下声明。
+
+.JWT Payload
+[source,sql]
+----
+{
+  "exp": 2147483647,
+  "ac": "token_name",
+  "ns": "abcum",
+  "db": "app_vitalsense"
+}
+----
+
+== 带有 `AUTHENTICATE` 子句
+
+`AUTHENTICATE` 子句允许你定义一个自定义表达式，该表达式将在令牌验证时执行。这个表达式将在令牌的上下文中执行，允许你在令牌被接受之前对令牌声明进行额外的检查。如果表达式返回任何值或抛出任何错误，令牌将被拒绝。
+
+=== 示例：带有发行者和受众检查的 JWT 用户身份验证
+
+这个示例为使用 JSON Web Tokens (JWT) 进行身份验证的系统用户设置额外的令牌验证逻辑。在这个示例中，使用 HS512 算法对令牌进行签名。`AUTHENTICATE` 块包含验证令牌有效性的条件：它检查令牌的发行者（`iss`）是否为 “surrealdb-test”，如果不是则抛出错误。类似地，它检查令牌的受众（在 `aud` 声明中定义，可以提供为字符串数组或单个字符串）是否包含 “surrealdb-test”，如果不包含则抛出错误。如果两个检查都通过，令牌被认为是有效的。会话时长设置为 2 小时。
+
+[source,sql]
+----
+DEFINE ACCESS user ON DATABASE TYPE JWT
+ALGORITHM HS512 KEY "sNSYneezcr8kqphfOC6NwwraUHJCVAt0XjsRSNmssBaBRh3WyMa9TRfq8ST7fsU2H2kGiOpU4GbAF1bCiXmM1b3JGgleBzz7rsrz6VvYEM4q3CLkcO8CMBIlhwhzWmy8"
+AUTHENTICATE {
+  IF $token.iss != "surrealdb-test" { THROW "Invalid token issuer" };
+  IF type::is::array($token.aud) {
+    IF "surrealdb-test" NOT IN $token.aud { THROW "Invalid token audience" }
+  } ELSE {
+    IF $token.aud IS NOT "surrealdb-test" { THROW "Invalid token audience" }
+  };
+}
+DURATION FOR SESSION 2h;
+----
+
+== 使用 `IF NOT EXISTS` 子句
+
+`IF NOT EXISTS` 子句可以用来定义一个 JWT 类型的访问方法，前提是它尚未存在。当你想要确保只有在访问方法尚未存在时才创建它时，应该在 SurrealDB 中使用 `IF NOT EXISTS` 子句来定义访问方法。如果访问方法已经存在，`DEFINE ACCESS` 语句将返回错误。
+
+当你想要安全地尝试定义一个访问方法而不手动检查其存在时，这特别有用。
+
+[source,sql]
+----
+-- Create a JWT access method for the example database if it does not already exist
+DEFINE ACCESS IF NOT EXISTS example ON DATABASE TYPE JWT ALGORITHM HS512 KEY
+"sNSYneezcr8kqphfOC6NwwraUHJCVAt0XjsRSNmssBaBRh3WyMa9TRfq8ST7fsU2H2kGiOpU4GbAF1bCiXmM1b3JGgleBzz7rsrz6VvYEM4q3CLkcO8CMBIlhwhzWmy8";
+----
+
+== 使用 `OVERWRITE` 子句
+
+`OVERWRITE` 子句可以用来定义一个 JWT 类型的访问方法，并在它已经存在的情况下覆盖它。当你想要修改现有的访问方法定义时，应该使用 `OVERWRITE` 子句。如果访问方法已经存在，`DEFINE ACCESS` 语句将用新的访问方法定义覆盖现有的访问方法定义。
+
+[source,sql]
+----
+-- Create a JWT access method for the example database and overwrite it if it already exists
+DEFINE ACCESS OVERWRITE example ON DATABASE TYPE JWT ALGORITHM HS512 KEY 'secret';
+----

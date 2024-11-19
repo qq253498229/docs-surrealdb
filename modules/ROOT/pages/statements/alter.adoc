@@ -1,0 +1,65 @@
+= `ALTER` 语句
+
+`ALTER` 语句可以用来更改已定义资源的定义。
+
+NOTE: 目前，`ALTER` 语句仅支持修改表及其属性—— `ALTER TABLE`，但将来会扩展到包括其他资源。在此期间，可以在其他 `DEFINE` 语句中使用 `OVERWRITE` 子句来重新定义已经定义过的资源。
+
+.SurrealQL语法
+[source,sql]
+----
+ALTER [
+	| TABLE [ IF EXISTS ] @name
+		[ DROP ]
+		[ SCHEMAFULL | SCHEMALESS ]
+		[ PERMISSIONS [ NONE | FULL
+			| FOR select @expression
+			| FOR create @expression
+			| FOR update @expression
+			| FOR delete @expression
+		] ]
+    [ COMMENT @string ]
+]
+----
+
+[[modify-a-table-schema]]
+== 修改表结构
+
+在启动一个新项目时，您可能需要一个无结构的表来接收灵活地数据结构。然而，随着项目的进展，您可能想要锁定结构以防止添加新字段。此时可以使用 `ALTER` 语句来实现。
+
+NOTE: 要查看已经定义且可以使用 `ALTER` 修改的项目，可以使用 xref:statements/info.adoc[INFO] 语句（`INFO FOR ROOT`、`INFO FOR NAMESPACE` 或 `INFO FOR DATABASE`）。
+
+使用 `ALTER` 修改已存在表的一个示例：
+
+[source,sql]
+----
+DEFINE TABLE user SCHEMALESS;
+DEFINE FIELD name ON TABLE user TYPE string;
+CREATE user SET name = "LordofSalty";
+
+-- Now make it schemafull to ensure that no other fields can be used
+ALTER TABLE user SCHEMAFULL;
+----
+
+[[modify-table-permissions]]
+== 修改表权限
+
+您还可以使用 `ALTER` 语句来更改表的权限。ALTER语句只需要包含需要更改的项目，而不需要整个定义。
+
+[source,sql]
+----
+-- Will show up as DEFINE TABLE user TYPE ANY SCHEMAFULL PERMISSIONS NONE
+DEFINE TABLE user SCHEMAFULL;
+
+-- Now defined as DEFINE TABLE user TYPE ANY SCHEMAFULL PERMISSIONS FULL
+ALTER TABLE user PERMISSIONS FOR create FULL;
+----
+
+[[using-if-exists-clause]]
+== 使用 ``IF EXISTS`` 条件
+
+您可以使用 'IF EXISTS' 子句来防止在尝试修改不存在的表时发生错误。
+
+[source,sql]
+----
+ALTER TABLE IF EXISTS user SCHEMAFULL;
+----

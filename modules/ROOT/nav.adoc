@@ -21,19 +21,35 @@
 ** Strings
 ** UUIDs
 ** Values
-* xref:statements.adoc[Statements]
-** ALTER
-** BEGIN
-** BREAK
-** CANCEL
-** COMMIT
-** CONTINUE
-** CREATE
-** DEFINE
+* xref:statements.adoc[]
+** xref:statements/alter.adoc[ALTER]
+** xref:statements/begin.adoc[BEGIN]
+** xref:statements/break.adoc[BREAK]
+** xref:statements/cancel.adoc[CANCEL]
+** xref:statements/commit.adoc[COMMIT]
+** xref:statements/continue.adoc[CONTINUE]
+** xref:statements/create.adoc[CREATE]
+** xref:statements/define.adoc[DEFINE]
+*** xref:statements/define/access.adoc[DEFINE ACCESS]
+**** xref:statements/define/access/jwt.adoc[JWT]
+**** xref:statements/define/access/record.adoc[RECORD]
+*** xref:statements/define/analyzer.adoc[DEFINE ANALYZER]
+*** xref:statements/define/config.adoc[DEFINE CONFIG]
+*** xref:statements/define/database.adoc[DEFINE DATABASE]
+*** xref:statements/define/event.adoc[DEFINE EVENT]
+*** xref:statements/define/field.adoc[DEFINE FIELD]
+*** xref:statements/define/function.adoc[DEFINE FUNCTION]
+*** xref:statements/define/indexes.adoc[DEFINE INDEX]
+*** xref:statements/define/namespace.adoc[DEFINE NAMESPACE]
+*** xref:statements/define/param.adoc[DEFINE PARAM]
+*** xref:statements/define/scope.adoc[DEFINE SCOPE]
+*** xref:statements/define/table.adoc[DEFINE TABLE]
+*** xref:statements/define/token.adoc[DEFINE TOKEN]
+*** xref:statements/define/user.adoc[DEFINE USER]
 ** DELETE
-** FOR
+** xref:statements/for.adoc[FOR]
 ** IF ELSE
-** INFO
+** xref:statements/info.adoc[INFO]
 ** INSERT
 ** KILL
 ** LET
@@ -49,7 +65,7 @@
 ** UPDATE
 ** UPSERT
 ** USE
-* Functions
+* 函数
 ** Database Functions
 *** Array functions
 *** Bytes functions
@@ -82,7 +98,7 @@
 *** SurrealQL functions
 ** SurrealML Functions
 *** Machine learning functions
-* xref:operations.adoc[Operations]
-* xref:parameters.adoc[Parameters]
-* Transactions
-* Comments
+* xref:operations.adoc[]
+* xref:parameters.adoc[]
+* 事务
+* 注释

@@ -1,1 +1,3 @@
 = *DEFINE TABLE* 语句
+
+[[defining-permissions]]

@@ -1,0 +1,88 @@
+= `DEFINE ACCESS` 语句
+
+定义访问方法允许 SurrealDB 使用不同类型的凭证授予对资源的访问权限。
+
+== 需求
+
+* 您必须作为 xref:https://surrealdb.com/docs/surrealdb/security/authentication#system-users[系统用户] 进行身份验证，且您的级别必须与定义访问权限的级别相同或更高。
+
+== 语句语法
+
+.SurrealQL语法
+[source,sql]
+----
+DEFINE ACCESS [ OVERWRITE | IF NOT EXISTS ] @name
+  ON [ ROOT | NAMESPACE | DATABASE ]
+  TYPE [
+    JWT [ ALGORITHM @algorithm KEY @key | URL @url ]
+    | RECORD
+      [ SIGNUP @expression ]
+      [ SIGNIN @expression ]
+      [ WITH JWT
+        [ ALGORITHM @algorithm KEY @key | URL @url ]
+        [ WITH ISSUER KEY @key ]
+      ]
+  [ AUTHENTICATE @expression ]
+  [ DURATION
+    [ FOR TOKEN @duration ]
+    [ FOR SESSION @duration ]
+  ]
+  [ COMMENT @string ]
+----
+
+== JSON Web Token (JWT) 访问
+
+JWT 访问方法允许使用由可信发行者签名的令牌访问 SurrealDB。只要令牌是用可信凭证签名的，SurrealDB就会信任令牌的内容。
+
+了解更多关于 xref:statements/define/access/jwt.adoc[JWT 访问方法的信息，请查看文档]。
+
+== 记录访问
+
+记录访问方法允许作为 link:https://surrealdb.com/docs/surrealdb/security/authentication#record-users[记录用户] 访问 SurrealDB。记录用户允许 SurrealDB 作为 Web 数据库运行，提供机制来定义自定义的登录和注册逻辑以及自定义的表和字段权限。
+
+了解更多关于 xref:statements/define/access/record.adoc[记录访问方法的信息，请查看文档]。
+
+== 持续时间
+
+持续时间子句指定了在使用访问方法成功认证后返回的令牌的持续时间，以及使用访问方法和上述令牌建立的会话的持续时间。这些概念之间的区别在 link:https://surrealdb.com/docs/surrealdb/security/authentication#expiration[过期文档] 中有解释。
+
+[source,sql]
+----
+-- Create a RECORD access method for accounts
+-- On successful authentication, a token expiring after 15 minutes will be returned
+-- This token can be used to establish a session that will expire after 6 hours
+-- The token will be automatically used to authenticate the session
+DEFINE ACCESS account ON DATABASE TYPE RECORD
+	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+	DURATION FOR TOKEN 15m, FOR SESSION 12h
+;
+----
+
+== 使用 `AUTHENTICATE` 子句
+
+authenticate 子句可以用来更改 `SIGNIN` 和 `SIGNUP` 子句返回的记录标识符，或者在 `JWT` 认证时替换令牌中提供的标识符。在 xref:statements/define/access/record.adoc[DEFINE ACCESS ... TYPE RECORD] 的上下文中，`AUTHENTICATE` 子句总是在登录、注册和令牌认证中执行。
+
+当在 xref:statements/define/access/jwt.adoc[DEFINE ACCESS ... TYPE JWT] 中使用时，`AUTHENTICATE` 子句用于验证令牌声明，并且可以用来记录或阻止认证尝试。
+
+在这两种情况下，子句期望不返回任何内容，否则会以通用错误失败。可以调用 `THROW` 语句向最终用户返回自定义错误。
+
+== 使用 `IF NOT EXISTS` 子句
+
+`IF NOT EXISTS` 子句可以用来定义一个访问方法，前提是它尚未存在。如果访问方法已经存在，`DEFINE ACCESS` 语句将返回错误。
+
+[source,sql]
+----
+-- Create an ACCESS if it does not already exist
+DEFINE ACCESS IF NOT EXISTS example ON NAMESPACE ...;
+----
+
+== 使用 `OVERWRITE` 子句
+
+`OVERWRITE` 子句可以用来定义一个访问方法，并在它已经存在的情况下覆盖现有的一个。当您想要修改现有的访问方法定义时，应该使用 `OVERWRITE` 子句。如果访问方法已经存在，`DEFINE ACCESS` 语句将用新的访问方法定义覆盖现有的访问方法定义。
+
+[source,sql]
+----
+-- Create an ACCESS and overwrite if it already exists
+DEFINE ACCESS OVERWRITE example ON NAMESPACE ...;
+----

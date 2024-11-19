@@ -1,0 +1,69 @@
+= `CONTINUE` 语句
+
+CONTINUE语句可以用来跳过循环的一次迭代，比如在 xref:statements/for.adoc[FOR语句] 中。
+
+== 语句语法
+
+.SurrealQL语法
+[source,sql]
+----
+CONTINUE
+----
+
+== 示例用法
+
+以下查询显示了这个语句的示例用法。
+
+除非满足某个特定条件，否则跳过循环的一次迭代：
+
+[source,sql]
+----
+-- Set can_vote to true for every person over 18 years old.
+FOR $person IN (SELECT id, age FROM person) {
+	IF ($person.age < 18) {
+		CONTINUE;
+	};
+
+	UPDATE $person.id SET can_vote = true;
+};
+----
+
+遇到不良数据时跳过循环的一次迭代：
+
+[source,sql]
+----
+-- Data retrieved from somewhere which contains many NONE values
+LET $weather = [
+	{
+		city: 'London',
+		temperature: 22.2,
+		timestamp: 1722565566389
+	},
+	NONE,
+	{
+		city: 'London',
+		temperature: 20.1,
+		timestamp: 1722652002699
+	},
+    {
+        city: 'Phoenix',
+        temperature: 45.1,
+        timestamp: 1722565642160
+    },
+    NONE,
+    NONE,
+    {
+        city: 'Phoenix',
+        temperature: 45.1,
+        timestamp: 1722652070372
+    },
+];
+
+FOR $data IN $weather {
+    IF $data IS NONE {
+        CONTINUE;
+    };
+
+	CREATE weather CONTENT $data;
+};
+----

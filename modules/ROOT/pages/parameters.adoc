@@ -1,4 +1,4 @@
-= Parameters
+= 参数
 
 [[defining-parameters-within-surrealql]]
 == Defining parameters within SurrealQL

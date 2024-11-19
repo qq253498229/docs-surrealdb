@@ -1,0 +1,270 @@
+= `DEFINE ACCESS ... TYPE RECORD`
+
+记录访问方法允许以 link:https://surrealdb.com/docs/surrealdb/security/authentication#record-users[记录用户] 的身份访问 SurrealDB。
+
+记录用户通过提供自定义登录和注册逻辑以及自定义表和字段权限的机制，允许 SurrealDB 作为 Web 数据库运行。
+
+== 要求
+
+* 在定义记录访问方法之前，您必须以 xref:statements/define/user.adoc[根用户、命名空间用户或数据库用户] 的身份进行身份验证。
+* 在定义记录访问方法之前，xref:statements/use.adoc[您必须选择您的命名空间和数据库]。
+
+== 语句语法
+
+.SurrealQL 语法
+[source,sql]
+----
+DEFINE ACCESS [ OVERWRITE | IF NOT EXISTS ] @name
+  ON DATABASE TYPE RECORD
+    [ SIGNUP @expression ]
+    [ SIGNIN @expression ]
+    [ WITH JWT
+      [ ALGORITHM @algorithm KEY @key | URL @url ]
+      [ WITH ISSUER KEY @key ]
+    ]
+  [ AUTHENTICATE @expression ]
+  [ DURATION
+    [ FOR TOKEN @duration ]
+    [ FOR SESSION @duration ]
+  ]
+----
+
+== 示例用法
+
+以下展示了如何使用 `DEFINE ACCESS ... TYPE RECORD` 语句定义记录访问。
+
+[source,sql]
+----
+DEFINE ACCESS account ON DATABASE TYPE RECORD
+	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+	DURATION FOR TOKEN 15m, FOR SESSION 12h
+;
+----
+
+=== 使用 JSON Web Token
+
+使用记录访问方法成功认证后，SurrealDB 会生成一个 JSON Web Token（JWT 或在 SurrealDB 的上下文中，仅称为“令牌”），该令牌在到期之前可用于以记录用户的身份进行认证，无需提供任何额外的凭据。这些令牌也可以由第三方发行并被 SurrealDB 信任，以便在 SurrealDB 外部进行认证过程，而将结果访问声明提供给 SurrealDB 内部的一个它信任的令牌中。这一特性由 `WITH JWT` 子句提供，其行为与 xref:statements/define/access/jwt.adoc[JWT 访问方法] 类似。
+
+由于 JWT 中声明的来源经过验证，这些声明可以在 SurrealQL 中使用，以便通过使用 OpenID Connect、OAuth 或简单地作为 JWT 的可信发行者来提供表和字段授权的外部认证器。这可以通过利用表权限来实现，根据验证令牌中的声明值允许或禁止访问。例如，这些声明可以与表中的记录进行比较，只返回符合特定条件的记录。
+
+请注意，表和字段权限仅适用于 link:https://surrealdb.com/docs/surrealdb/security/authentication#record-users[记录用户]，这些用户必须使用由 `RECORD` 访问方法验证的令牌。在 `JWT` 访问方法中定义的命名空间和数据库令牌提供的访问权限等同于 link:https://surrealdb.com/docs/surrealdb/security/authentication#system-users[系统用户] 的访问权限，这超出了细粒度权限的范围。当应用程序用户将直接使用 JWT 进行认证时，定义一个带有 `WITH JWT` 的 `RECORD` 访问方法很可能是正确的选择。
+
+有关如何在 SurrealDB 中使用 JWT 令牌的更多信息，包括通过 xref:statements/define/access/jwt.adoc#json-web-key-set-jwks[JWKS] 进行验证，请参考 xref:statements/define/access/jwt.adoc[JWT 访问方法] 文档。
+
+以下示例展示了如何使用带有令牌的记录访问来授权，无论是通过验证令牌中的 `id` 声明（用于填充 xref:parameters.adoc#auth[$auth] 保留参数）与 `user` 表中正在查询的记录匹配，还是令牌中的 `privileged` 声明设置为 `true`：
+
+[source,sql]
+----
+-- Specify the namespace and database for the token
+USE NS abcum DB app_vitalsense;
+
+DEFINE ACCESS token_name ON DATABASE TYPE RECORD WITH JWT
+ALGORITHM RS256 KEY "-----BEGIN PUBLIC KEY-----
+MUO52Me9HEB4ZyU+7xmDpnixzA/CUE7kyUuE0b7t38oCh+sQouREqIjLwgHhFdhh3cQAwr6GH07D
+ThioYrZL8xATJ3Youyj8C45QnZcGUif5PkpWXDi0HJSoMFekbW6Pr4xuqIqb2LGxGDVJcLZwJ2AS
+Gtu2UAfPXbBD3ffiad393M22g1iHM80YaNi+xgswG7qtXE4lR/Lt4s0MeKKX7stdWI1VIsoB+y3i
+r/OWUvJPjjDNbAsyy8tQmxydv+FUnLEP9TNT4AhN4DXcJ+XsDtW7OWt4EdSVDeKpGbIMvIrh1Pe+
+Nilj8UHNyNDHa2AjK3seMo6CMvaIQJKj5o4xGFblFGwvvPD03SbuQLs1FdRjsZCeWLdYeQ3JDHE9
+sFG7DCXlpMJcaYT1mf4XHJ0gPekNLQyewTY3Vxf7FgV3GCNjV20kcDFgJA2+iVW2wSrb+txD1ycE
+kbi8jh0pedWwE40VQWaTh/8eAvX7IHWya/AEro25mq+m6vktNZLbvLphhp586kJK3Tdt3YjpkPre
+M3nkFWOWurIyKbtIV9JemfwCgt89sNV45dTlnEDEZFFGnIgDnWgx3CUo4XmhICEQU8+tklw9jJYx
+iCTjhbIDEBHySSSc/pQ4ftHQmhToTlQeOdEy4LYiaEIgl1X+hzRH1hBYvWlNKe4EY1nMCKcjgt0=
+-----END PUBLIC KEY-----";
+
+DEFINE TABLE user SCHEMAFULL
+  -- Authorized users can select, update, delete and create user records
+  PERMISSIONS FOR select, update, delete, create
+  -- The access method must be "users"
+  WHERE $access = "users"
+  -- The record of the user being queried must match the one identified in the token
+  -- Only matching records will be changed or returned
+  AND id = $auth.id
+  -- Allow privileged tokens to query any user
+  OR $token.privileged = true
+;
+----
+
+您还可以使用权限子句对其他 JWT 声明进行额外验证，这些声明可能是令牌提供者要求或推荐的，例如验证 `iss` 声明是否与使用 `$token.iss` 的特定主体匹配。然而，这种逻辑可能更适合于 xref:statements/define/access/record.adoc#with-authenticate-clause[AUTHENTICATE] 子句，该子句仅在验证令牌之前建立认证会话时执行，而不是在每个查询和每条记录中执行。
+
+当用于在 SurrealDB 中以记录用户身份进行认证时，令牌的有效载荷至少应包括以下声明。
+
+.JWT 有效载荷
+[source,sql]
+----
+{
+  "exp": 2147483647,
+  "ns": "abcum",
+  "db": "app_vitalsense",
+  "ac": "users",
+  "id": "user:1"
+}
+----
+
+当令牌中存在 `id` 声明时，与指定标识符匹配的记录字段将可以通过 `$auth` 保留参数进行访问。例如，如果 `id` 声明的值是 `user:73q1bl039y6k8z80v55d`，并且用户记录有“name”或“email”等字段，那么 `$auth.name` 和 `$auth.email` 可以用来访问 `user:73q1bl039y6k8z80v55d` 记录的这些值，而无需它们出现在 JWT 中。
+
+==== With Issuer
+
+当明确定义验证记录访问令牌的方法时，也可以自定义 SurrealDB 发行这些令牌的方式。这允许指定算法和签名密钥，否则默认为 HS512 算法和随机生成的 128 个字符的字母数字密钥。配置记录访问方法以使用特定的签名凭证签名令牌，允许第三方服务通过信任这些签名凭证来信任 SurrealDB 发行的令牌。通过这种方式，外部服务可以依赖于 SurrealDB 中为记录用户实现的注册和登录逻辑来进行自身的身份验证。
+
+目前，发行者和验证者的算法必须匹配。因此，如果已经在 `WITH JWT` 子句中定义了算法，则可以省略发行者算法。同样，如果已经在 `WITH JWT` 子句中定义了使用对称算法验证 JWT 的密钥，则不需要明确定义发行者，因为相同的密钥也将用于签名令牌。
+
+以下是一个定义可以发行具有非对称密钥对的令牌的记录访问方法的示例：
+
+[source,sql]
+----
+DEFINE ACCESS token_name ON DATABASE TYPE RECORD WITH JWT
+ALGORITHM RS256
+  KEY "-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu1SU1LfVLPHCozMxH2Mo
+4lgOEePzNm0tRgeLezV6ffAt0gunVTLw7onLRnrq0/IzW7yWR7QkrmBL7jTKEn5u
++qKhbwKfBstIs+bMY2Zkp18gnTxKLxoS2tFczGkPLPgizskuemMghRniWaoLcyeh
+kd3qqGElvW/VDL5AaWTg0nLVkjRo9z+40RQzuVaE8AkAFmxZzow3x+VJYKdjykkJ
+0iT9wCS0DRTXu269V264Vf/3jvredZiKRkgwlL9xNAwxXFg0x/XFw005UWVRIkdg
+cKWTjpBP2dPwVZ4WWC+9aGVd+Gyn1o0CLelf4rEjGoXbAAEgAqeGUxrcIlbjXfbc
+mwIDAQAB
+-----END PUBLIC KEY-----"
+  WITH ISSUER KEY "-----BEGIN PRIVATE KEY-----
+MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC7VJTUt9Us8cKj
+MzEfYyjiWA4R4/M2bS1GB4t7NXp98C3SC6dVMvDuictGeurT8jNbvJZHtCSuYEvu
+NMoSfm76oqFvAp8Gy0iz5sxjZmSnXyCdPEovGhLa0VzMaQ8s+CLOyS56YyCFGeJZ
+qgtzJ6GR3eqoYSW9b9UMvkBpZODSctWSNGj3P7jRFDO5VoTwCQAWbFnOjDfH5Ulg
+p2PKSQnSJP3AJLQNFNe7br1XbrhV//eO+t51mIpGSDCUv3E0DDFcWDTH9cXDTTlR
+ZVEiR2BwpZOOkE/Z0/BVnhZYL71oZV34bKfWjQIt6V/isSMahdsAASACp4ZTGtwi
+VuNd9tybAgMBAAECggEBAKTmjaS6tkK8BlPXClTQ2vpz/N6uxDeS35mXpqasqskV
+laAidgg/sWqpjXDbXr93otIMLlWsM+X0CqMDgSXKejLS2jx4GDjI1ZTXg++0AMJ8
+sJ74pWzVDOfmCEQ/7wXs3+cbnXhKriO8Z036q92Qc1+N87SI38nkGa0ABH9CN83H
+mQqt4fB7UdHzuIRe/me2PGhIq5ZBzj6h3BpoPGzEP+x3l9YmK8t/1cN0pqI+dQwY
+dgfGjackLu/2qH80MCF7IyQaseZUOJyKrCLtSD/Iixv/hzDEUPfOCjFDgTpzf3cw
+ta8+oE4wHCo1iI1/4TlPkwmXx4qSXtmw4aQPz7IDQvECgYEA8KNThCO2gsC2I9PQ
+DM/8Cw0O983WCDY+oi+7JPiNAJwv5DYBqEZB1QYdj06YD16XlC/HAZMsMku1na2T
+N0driwenQQWzoev3g2S7gRDoS/FCJSI3jJ+kjgtaA7Qmzlgk1TxODN+G1H91HW7t
+0l7VnL27IWyYo2qRRK3jzxqUiPUCgYEAx0oQs2reBQGMVZnApD1jeq7n4MvNLcPv
+t8b/eU9iUv6Y4Mj0Suo/AU8lYZXm8ubbqAlwz2VSVunD2tOplHyMUrtCtObAfVDU
+AhCndKaA9gApgfb3xw1IKbuQ1u4IF1FJl3VtumfQn//LiH1B3rXhcdyo3/vIttEk
+48RakUKClU8CgYEAzV7W3COOlDDcQd935DdtKBFRAPRPAlspQUnzMi5eSHMD/ISL
+DY5IiQHbIH83D4bvXq0X7qQoSBSNP7Dvv3HYuqMhf0DaegrlBuJllFVVq9qPVRnK
+xt1Il2HgxOBvbhOT+9in1BzA+YJ99UzC85O0Qz06A+CmtHEy4aZ2kj5hHjECgYEA
+mNS4+A8Fkss8Js1RieK2LniBxMgmYml3pfVLKGnzmng7H2+cwPLhPIzIuwytXywh
+2bzbsYEfYx3EoEVgMEpPhoarQnYPukrJO4gwE2o5Te6T5mJSZGlQJQj9q4ZB2Dfz
+et6INsK0oG8XVGXSpQvQh3RUYekCZQkBBFcpqWpbIEsCgYAnM3DQf3FJoSnXaMhr
+VBIovic5l0xFkEHskAjFTevO86Fsz1C2aSeRKSqGFoOQ0tmJzBEs1R6KqnHInicD
+TQrKhArgLXX4v3CddjfTRJkFWDbE/CkvKZNOrcf1nhaGCPspRJj2KUkj1Fhl9Cnc
+dn/RsYEONbwQSjIfMPkvxF+8HQ==
+-----END PRIVATE KEY-----"
+;
+----
+
+在使用对称算法的 `WITH JWT` 中隐式定义了发行者：
+
+[source,sql]
+----
+DEFINE ACCESS token_name ON DATABASE TYPE RECORD WITH JWT
+-- Symmetric algorithm with a symmetric key
+-- The same key is used to sign and verify
+ALGORITHM HS512 KEY "secret";
+-- The following clause is implicit:
+-- WITH ISSUER ALGORITHM HS512 KEY "secret"
+----
+
+[[with-authenticate-clause]]
+=== 使用 `AUTHENTICATE` 子句
+
+在 xref:statements/define/access/record.adoc[DEFINE ACCESS ... TYPE RECORD] 的上下文中，可以使用 authenticate 子句来更改 `SIGNIN` 和 `SIGNUP` 子句返回的记录标识符，或在使用 `JWT` 进行身份验证时替换令牌中提供的标识符。
+
+这个子句还可以用来记录或阻止记录用户的认证尝试，因为它总是在登录、注册和令牌认证中执行。
+
+与 xref:statements/define/table.adoc#defining-permissions[PERMISSIONS] 子句不同，`AUTHENTICATE` 子句只在认证时执行，这提高了只需要在该点验证的查询的性能。
+
+另一方面，权限查询在每个查询和每条记录中执行，确保在查询时验证任何授权条件。`AUTHENTICATE` 子句适用于验证在会话生命周期内不预期会改变的特定条件，例如任何所需的令牌声明的存在。
+
+=== 示例：外部认证提供者
+
+替换用于建立会话的记录标识符在令牌中不包含标识符的场景中特别有用。这在使用外部认证提供者时很常见，后者可能只知道通用的用户标识符，如电子邮件地址或 UUID。
+
+在以下示例中，我们检查会话是否已经与现有用户关联，方法是使用 `$auth` 保留参数，其中包含经过身份验证的用户的记录标识符。如果我们可以从 `$auth` 中选择 `id` 字段，这意味着令牌已经包含了数据库中存在的记录的 `id`。如果不是这种情况，我们可以检查令牌是否包含我们可以依赖的唯一标识用户的不同声明。在这种情况下，我们检查电子邮件地址。如果令牌中存在 `email` 声明，我们尝试通过电子邮件地址从用户表中检索用户。如果没有任何查询返回记录，`AUTHENTICATE` 子句将失败并显示通用错误。您还可以选择 `THROW` 自定义错误，如下一个示例所示。
+
+[source,sql]
+----
+DEFINE ACCESS user ON DATABASE TYPE RECORD
+    WITH JWT ALGORITHM HS512 KEY 'secret'
+    AUTHENTICATE {
+        IF $auth.id {
+            RETURN $auth.id;
+        } ELSE IF $token.email {
+            RETURN SELECT * FROM user WHERE email = $token.email;
+        };
+    }
+;
+----
+
+=== 示例：认证失败
+
+因为 `AUTHENTICATE` 子句总是在登录、注册和令牌认证中执行，所以它处于一个独特的位置，可以在用户凭据被认为有效之后、用户完全认证之前集中逻辑。
+
+下面，我们展示了一个示例，验证用户是否启用。如果不是这种情况，我们可以 `THROW` 一个错误，说明用户无法认证的原因，并用自定义消息停止认证尝试。您也可以选择不返回任何内容，这将导致通用认证错误。如果用户已启用，我们可以 `RETURN` 记录标识符，这确认了认证成功，并指定将在会话中认证的记录用户与已经认证的用户相同。
+
+[source,sql]
+----
+DEFINE ACCESS user ON DATABASE TYPE RECORD
+    SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass), enabled = true )
+    SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+    AUTHENTICATE {
+        IF !$auth.enabled {
+            THROW "This user is not enabled";
+        };
+
+        RETURN $auth;
+    }
+;
+----
+
+=== 示例：审计和撤销令牌
+
+除了前一个示例中所示的内容外，`AUTHENTICATE` 子句还可以使用 `$token` 保留参数创建记录并访问令牌本身中的声明。这些功能可以结合使用来记录认证尝试，并在满足某些条件时阻止认证完成。
+
+下面，我们展示了一个概念验证示例，利用 SurrealDB 发行的令牌具有标准 `jti` 声明的事实，其中包含一个随机生成的唯一标识符，用于令牌。这个值可以用来唯一标识 SurrealDB 发行的每个令牌，用于审计和撤销。
+
+在这个示例中，我们在 SurrealDB 发行 `token` 后，为每个 `token` 在令牌表中创建一条新记录，该记录通过 `jti`（JWT ID）声明中的值进行标识。每次使用令牌进行认证时，我们检查令牌表中与 `jti`（JWT ID）声明匹配的标识符的记录是否已被撤销，如果是这样，我们将用自定义消息失败认证。否则，我们记录令牌成功认证的时间在 `audit` 表中，并继续认证，不作更改。
+
+在这个示例中，我们在 SurrealDB 发行每个 `token` 后，在 `token` 表中为每个令牌创建一条新记录，这条记录在成功登录（`SIGNIN`）`和注册`（SIGNUP）之后进行。这条记录通过 `jti`（JWT ID）声明中的值来标识。每次使用 `token` 进行认证时，我们都会检查 `token` 表中与 `jti`（JWT ID）声明匹配的标识符的记录是否已被撤销，如果是这样，我们将用自定义消息失败认证。否则，我们会在 `audit` 表中记录令牌成功认证的时间，并继续认证，不作任何更改。
+
+[source,sql]
+----
+DEFINE ACCESS user ON DATABASE TYPE RECORD
+    SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+    SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+    AUTHENTICATE {
+        IF type::thing("token", $token.jti).revoked = true {
+            THROW "This token has been revoked";
+        };
+        INSERT INTO token { id: $token.jti, exp: $token.exp, revoked: false };
+        CREATE audit CONTENT { token: $token.jti, time: time::now() };
+        RETURN $auth;
+    }
+    DURATION FOR TOKEN 30d, FOR SESSION 1h
+;
+----
+
+== 使用 `IF NOT EXISTS` 子句
+
+`IF NOT EXISTS` 子句可以用来定义一个 RECORD 类型的访问方法，前提是它尚未存在。如果您想确保只有在访问方法尚未存在时才创建它，请在 SurrealDB 中使用 `IF NOT EXISTS` 子句定义访问方法。如果访问方法已经存在，`DEFINE ACCESS` 语句将返回错误。
+
+当您想要安全地尝试定义访问方法而不先手动检查其存在时，它特别有用。
+
+[source,sql]
+----
+-- Create a RECORD access method for the example database if it does not already exist
+DEFINE ACCESS IF NOT EXISTS example ON DATABASE TYPE RECORD;
+----
+
+=== 使用 `OVERWRITE` 子句
+
+`OVERWRITE` 子句可以用来定义一个 JWT 类型的访问方法，并在它已经存在时覆盖现有的一个。当您想要修改现有的访问方法定义时，应使用 `OVERWRITE` 子句。如果访问方法已经存在，`DEFINE ACCESS` 语句将用新的访问方法定义覆盖现有的访问方法定义。
+
+[source,sql]
+----
+-- Create a RECORD access method for the example database and overwrite if it already exists
+DEFINE ACCESS OVERWRITE example ON DATABASE TYPE RECORD;
+----
+

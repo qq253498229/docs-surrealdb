@@ -1,0 +1,104 @@
+= DEFINE 语句
+
+DEFINE语句可以用来向模式(schema)指定指令，比如认证访问和行为、全局参数、表配置、表事件、分析器和索引。
+
+.SurrealQL语法
+[source,sql]
+----
+DEFINE [
+	NAMESPACE [ OVERWRITE | IF NOT EXISTS ] @name
+	| DATABASE [ OVERWRITE | IF NOT EXISTS ] @name
+	| USER [ OVERWRITE | IF NOT EXISTS ] @name ON [ ROOT | NAMESPACE | DATABASE ] [ PASSWORD @pass | PASSHASH @hash ] ROLES @roles
+	| TABLE [ OVERWRITE | IF NOT EXISTS ] @name
+		[ DROP ]
+		[ SCHEMAFULL | SCHEMALESS ]
+		[ AS SELECT @projections
+			FROM @tables
+			[ WHERE @condition ]
+			[ GROUP [ BY ] @groups ]
+		]
+		[ PERMISSIONS [ NONE | FULL
+			| FOR select @expression
+			| FOR create @expression
+			| FOR update @expression
+			| FOR delete @expression
+		] ]
+	| EVENT [ OVERWRITE | IF NOT EXISTS ] @name ON [ TABLE ] @table WHEN @expression THEN @expression
+	| FIELD [ OVERWRITE | IF NOT EXISTS ] @name ON [ TABLE ] @table
+		[ [ FLEXIBLE ] TYPE @type ]
+		[ VALUE @expression ]
+		[ ASSERT @expression ]
+		[ PERMISSIONS [ NONE | FULL
+			| FOR select @expression
+			| FOR create @expression
+			| FOR update @expression
+			| FOR delete @expression
+		] ]
+	| PARAM [ OVERWRITE | IF NOT EXISTS ] $@name VALUE @value
+	| FUNCTION [ OVERWRITE | IF NOT EXISTS ] fn::@name ( [ ( @argument:@type ... ) ] ) { [@query] [RETURNS @returned] }
+	| ANALYZER [ OVERWRITE | IF NOT EXISTS ] @name
+		[ TOKENIZERS @tokenizers ]
+		[ FILTERS @filters ]
+	| INDEX [ OVERWRITE | IF NOT EXISTS ] @name ON [ TABLE ] @table [ FIELDS | COLUMNS ] @fields
+		[ UNIQUE | SEARCH ANALYZER @analyzer [ BM25 [(@k1, @b)] ] [ HIGHLIGHTS ] ]
+	| ACCESS [ OVERWRITE | IF NOT EXISTS ] @name ON [ NAMESPACE | DATABASE ]
+		TYPE [
+			JWT [ ALGORITHM @algorithm KEY @key | URL @url ]
+			| RECORD
+				[ SIGNUP @expression ]
+				[ SIGNIN @expression ]
+				[ WITH JWT [ ALGORITHM @algorithm KEY @key | URL @url ] [ WITH ISSUER KEY @key ] ]
+		]
+		[ DURATION [ FOR TOKEN @duration ] [ FOR SESSION @duration ] ]
+    [ COMMENT @string ]
+]
+----
+
+xref:statements/info.adoc[INFO] 语句可以用来查看当前数据库连接中存在哪些定义语句。所有 `DEFINE` 语句都可以跟随一个 `COMMENT`。
+
+一个在表上定义字段的例子，随后是对同一张表执行 `INFO` 命令：
+
+[source,sql]
+----
+DEFINE FIELD name ON TABLE person TYPE string COMMENT "Todo: add assertion for maximum length";
+INFO FOR TABLE person;
+----
+
+[source,sql]
+----
+{
+	events: {},
+	fields: {
+		name: "DEFINE FIELD name ON person TYPE string COMMENT 'Todo: add assertion for maximum length' PERMISSIONS FULL"
+	},
+	indexes: {},
+	lives: {},
+	tables: {}
+}
+----
+
+一个为数据库定义用户和表的例子，随后是对当前数据库执行 `INFO` 命令：
+
+[source,sql]
+----
+DEFINE USER db_user ON DATABASE PASSWORD "strongpassword" ROLES OWNER;
+DEFINE TABLE person SCHEMAFULL;
+INFO FOR DB;
+----
+
+[source,sql]
+----
+{
+    "accesses": {},
+    "analyzers": {},
+    "functions": {},
+    "models": {},
+    "params": {},
+    "tables": {
+        "person": "DEFINE TABLE person TYPE ANY SCHEMAFULL PERMISSIONS NONE"
+    },
+    "users": {
+        "db_user": "DEFINE USER db_user ON DATABASE PASSHASH '$argon2id$v=19$m=19456,t=2,p=1$P5nVYXOMvk6rEz67kjL5Dg$0T/XNmgIaB+lK0IPspg1l8LruzNK96jd/PvktRCB/ww' ROLES OWNER"
+    }
+}
+----

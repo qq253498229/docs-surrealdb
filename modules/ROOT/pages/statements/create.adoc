@@ -1,0 +1,595 @@
+= `CREATE` 语句
+
+`CREATE` 语句可以用来向数据库添加一条记录。如果记录已经存在，该语句将返回一个错误。
+
+NOTE: 这个语句不能用来创建图关系。为此，请使用 `xref:statements/relate.adoc[RELATE]` 语句。
+
+== 语句语法
+
+.SurrealQL语法
+[source,sql]
+----
+CREATE [ ONLY ] @targets
+	[ CONTENT @value
+	  | SET @field = @value ...
+	]
+	[ RETURN NONE | RETURN BEFORE | RETURN AFTER | RETURN DIFF | RETURN @statement_param, ... ]
+	[ TIMEOUT @duration ]
+	[ PARALLEL ]
+;
+----
+
+== 创建表记录
+
+`CREATE` 可以只使用一个表名，这种情况下，其ID将随机生成。
+
+[source,sql]
+----
+-- Create a new record
+CREATE person;
+----
+
+.响应
+[source,sql]
+----
+[
+    {
+        "id": "person:2vvgzt6m24s952yiy7x8"
+    }
+]
+----
+
+若要为表指定一个特定的ID，可以使用冒号 `:` 后跟一个值。
+
+[source,sql]
+----
+CREATE person:one;
+----
+
+.响应
+[source,sql]
+----
+[
+	{
+		id: person:one
+	}
+]
+----
+
+表名和ID一起构成了完整的 xref:datamodel/ids.adoc[记录ID]，可以用来查询创建的数据或使用 xref:statements/select.adoc[SELECT] 语句。更多关于有效记录标识符的信息，请查看 xref:datamodel/ids.adoc[记录ID] 页面。
+
+默认的随机ID可以使用 xref:datamodel/ids.adoc#generating-record-ids[内置的ID生成函数] 以不同的方式生成（例如ULID）。
+
+也可以使用字符串或支持的记录ID格式之一来指定要创建的 xref:datamodel/ids.adoc[记录的ID]。
+
+[source,sql]
+----
+-- Use the type::thing() function to provide a record's table and id separately
+CREATE type::thing("person", "one");
+----
+
+== 添加记录数据
+
+创建记录时，可以使用 `SET` 子句或CONTENT子句来指定记录数据。`SET` 子句用于一次指定一个字段的记录数据，而 `CONTENT` 子句用于使用SurrealQL对象指定记录数据。当记录数据已经是SurrealQL或JSON对象的形式时，`CONTENT` 子句非常有用。
+
+[source,sql]
+----
+-- Create a new record with a text id
+CREATE person:tobie SET
+    name = 'Tobie',
+    company = 'SurrealDB',
+    skills = ['Rust', 'Go', 'JavaScript'];
+----
+
+上述操作将创建一个新的记录，ID为 `person:tobie`，并包含指定的数据。
+
+.响应
+[source,sql]
+----
+[
+	{
+		"id": "person:tobie",
+		"name": "Tobie",
+		"company": "SurrealDB",
+		"skills": ["Rust", "Go", "JavaScript"]
+	}
+]
+----
+
+使用 `CONTENT` 关键字指定记录数据：
+
+[source,sql]
+----
+-- Create a new record with a numeric id
+CREATE person:100 CONTENT {
+	name: 'Tobie',
+	company: 'SurrealDB',
+	skills: ['Rust', 'Go', 'JavaScript'],
+};
+----
+
+== 选项和子句
+
+=== 创建多个记录
+
+可以通过用逗号分隔表名来创建多个记录，甚至创建多种类型的记录。
+
+[source,sql]
+----
+-- Note: meta::tb(id) returns just the table name portion of a record ID
+CREATE townsperson, cat, dog SET
+    created_at = time::now(),
+    name = "Just a " + meta::tb(id);
+----
+
+.响应
+[source,sql]
+----
+[
+    {
+        "created_at": "2024-03-19T03:12:05.079Z",
+        "id": "townsperson:p37ha2lngckp3v8tvf2j",
+        "name": "Just a townsperson"
+    },
+    {
+        "created_at": "2024-03-19T03:12:05.080Z",
+        "id": "cat:p1pwbjaq96nhhnuohjtc",
+        "name": "Just a cat"
+    },
+    {
+        "created_at": "2024-03-19T03:12:05.080Z",
+        "id": "dog:01vcxgdpuctdk354hzkp",
+        "name": "Just a dog"
+    }
+]
+----
+
+`| |` 语法是另一种在单次执行中创建多个记录的方式。这种语法可以以两种方式使用。
+
+一种是包含一个表名，一个 `:`（冒号），然后是一个数字。这将创建与表名后的数字相等数量的记录。创建的记录将具有随机ID。
+
+[source,sql]
+----
+-- Creates three townperson records with a random ID
+CREATE |townsperson:3|;
+----
+
+.响应
+[source,sql]
+----
+[
+	{
+		id: townsperson:hzkt0piy3f72xo5dl2jf
+	},
+	{
+		id: townsperson:k0mujrohm8qe2txz5pnz
+	},
+	{
+		id: townsperson:pwumqelrsi1qt0jmihwh
+	}
+]
+----
+
+另一种方法是在 `:` 之后使用 `..` 范围语法而不是单个数字。这将创建具有特定ID的记录，这些ID从下限到上限的范围。
+
+[source,sql]
+----
+CREATE |townsperson:1..3|;
+----
+
+.响应
+[source,sql]
+----
+[
+	{
+		id: townsperson:1
+	},
+	{
+		id: townsperson:2
+	},
+	{
+		id: townsperson:3
+	}
+]
+----
+
+所有这些方法可以组合使用，以同时创建多个记录。
+
+[source,sql]
+----
+CREATE dog, |cat:2|, |townsperson:1..3| SET
+    created_at = time::now(),
+    name = "Just a " + meta::tb(id);
+----
+
+.响应
+[source,sql]
+----
+[
+	{
+		created_at: '2024-08-13T04:14:44.135Z',
+		id: dog:u3fzmqvg3yq9mo3o6z2s,
+		name: 'Just a dog'
+	},
+	{
+		created_at: '2024-08-13T04:14:44.137Z',
+		id: cat:n6x3caiiazucslfs7rpm,
+		name: 'Just a cat'
+	},
+	{
+		created_at: '2024-08-13T04:14:44.137Z',
+		id: cat:rnvhxgjhsbea5u58s0wu,
+		name: 'Just a cat'
+	},
+	{
+		created_at: '2024-08-13T04:14:44.137Z',
+		id: townsperson:1,
+		name: 'Just a townsperson'
+	},
+	{
+		created_at: '2024-08-13T04:14:44.137Z',
+		id: townsperson:2,
+		name: 'Just a townsperson'
+	},
+	{
+		created_at: '2024-08-13T04:14:44.137Z',
+		id: townsperson:3,
+		name: 'Just a townsperson'
+	}
+]
+----
+
+=== ONLY
+
+在创建单个记录时，可以使用 `ONLY` 子句来返回记录对象，而不是在数组中。
+
+[source,sql]
+----
+-- Returns an array with a single record inside
+CREATE person:tobie SET
+    name = 'Tobie',
+    company = 'SurrealDB',
+    skills = ['Rust', 'Go', 'JavaScript'];
+
+-- Returns just a single record
+CREATE ONLY person:tobie SET
+    name = 'Tobie',
+    company = 'SurrealDB',
+    skills = ['Rust', 'Go', 'JavaScript'];
+----
+
+.响应
+[source,sql]
+----
+-------- Query --------
+
+[
+	{
+		company: 'SurrealDB',
+		id: person:tobie,
+		name: 'Tobie',
+		skills: [
+			'Rust',
+			'Go',
+			'JavaScript'
+		]
+	}
+]
+
+-------- Query --------
+
+{
+	company: 'SurrealDB',
+	id: person:tobieagain,
+	name: 'Tobie',
+	skills: [
+		'Rust',
+		'Go',
+		'JavaScript'
+	]
+}
+----
+
+=== Return Values
+
+默认情况下，创建语句在创建记录后返回记录。要更改返回的内容，我们可以使用 `RETURN` 子句，指定返回 `NONE`、`BEFORE`、`AFTER`、`DIFF` 或特定字段的逗号分隔列表。
+
+`RETURN NONE` 在避免多余输出时很有用：
+
+[source,sql]
+----
+-- Create 10000 records but don't show any of them
+CREATE |person:10000| SET age = 46, username = "john-smith" RETURN NONE;
+----
+
+`RETURN DIFF` 返回变更集差异：
+
+[source,sql]
+----
+CREATE person SET age = 46, username = "john-smith" RETURN DIFF;
+----
+
+.响应
+[source,sql]
+----
+[
+	[
+		{
+			op: 'replace',
+			path: '/',
+			value: {
+				age: 46,
+				id: person:h84x4k5kh2m6cjf1vvza,
+				username: 'john-smith'
+			}
+		}
+	]
+]
+----
+
+在 `CREATE` 语句中 `RETURN BEFORE` 本质上是 `RETURN NONE` 的同义词，而 `RETURN AFTER` 是创建的默认行为。
+
+[source,sql]
+----
+-- Will always return NONE
+CREATE person SET age = 46, username = "john-smith" RETURN BEFORE;
+----
+
+[source,sql]
+----
+-- Return the record after creation
+CREATE person SET age = 46, username = "john-smith" RETURN AFTER;
+----
+
+您还可以从创建的记录中返回特定字段，以及根据需要返回临时字段以修改输出。
+
+[source,sql]
+----
+CREATE person
+    SET age = 46,
+    username = "john-smith",
+    interests = ['skiing', 'music']
+RETURN
+    age,
+    interests,
+    age + 1 AS age_next_year;
+----
+
+.响应
+[source,sql]
+----
+[
+	{
+		age: 46,
+		age_next_year: 47,
+		interests: [
+			'skiing',
+			'music'
+		]
+	}
+]
+----
+
+=== Timeout
+
+`TIMEOUT` 子句可以用来指定语句应该执行的最大时间。这在您想要更多控制时很有用，例如控制计算成本或确保查询在严格的延迟边界内成功或失败，以避免形成大量的查询队列。
+
+`TIMEOUT` 的值以秒或毫秒指定。
+
+[source,sql]
+----
+-- Query attempting to create half a million `person` records
+CREATE |person:500000| SET age = 46, username = "john-smith" TIMEOUT 500ms;
+----
+
+=== Parallel
+
+`PARALLEL` 关键字可以用来指定语句应该并行处理，而不是顺序处理。类似于 `TIMEOUT` 子句，如果需要的话，这有助于更精确地控制查询的行为。
+
+[source,sql]
+----
+CREATE person:26, CREATE person:27 PARALLEL;
+----
+
+=== VERSION
+
+如果您使用的是 link:https://surrealdb.com/docs/surrealdb/cli/start#surrealkv-beta[SurrealKV作为存储引擎]，在创建记录时可以为每个记录指定一个版本。这对于时间旅行查询很有用。您可以通过使用 `VERSION` 子句来查询记录的特定版本。
+
+`VERSION` 子句总是跟随着一个 xref:datamodel/datetime.adoc[datetime]，当指定的时间戳不存在时，返回一个空数组。
+
+NOTE: `VERSION` 子句目前处于Alpha阶段，可能会发生变化。我们不建议在生产环境中使用。
+
+[source,sql]
+----
+-- Create a record for user:john at 8:00AM
+CREATE user:john SET name = 'John' VERSION d'2024-08-19T08:00:00Z';
+[[{ id: user:john, name: 'John' }]]
+
+-- Return the record for user:john at 8:00AM
+SELECT * FROM user:john VERSION d'2024-08-19T08:00:00Z';
+[[{ id: user:john, name: 'John' }]]
+
+-- Create a record for user:john at 8:01AM
+CREATE user:john SET name = 'John-1' VERSION d'2024-08-19T08:01:00Z';
+[[{ id: user:john, name: 'John-1' }]]
+
+-- Return the record for user:john at 8:01AM
+SELECT * FROM user:john VERSION d'2024-08-19T08:01:00Z';
+[[{ id: user:john, name: 'John-1' }]]
+
+-- Return an empty array because the record at the datetime does not exist
+SELECT * FROM user:john VERSION d'2024-08-19T07:00:00Z';
+[[]]
+----
+
+另一个展示 `VERSION` 与 `CREATE` 如何协同工作的例子是在不同时间创建记录，然后在特定时间点查询它们。
+
+[source,sql]
+----
+CREATE |user:10| VERSION d"2020-09-09";
+
+[[{ id: user:rtbjoqv1xe9wnxjx5aro }, { id: user:tkik878q8uoddvuucu0a }, { id: user:rcnywgogvlipv3tb8qut }, { id: user:30ynx82x52ff77dxzv1i }, { id: user:59mxi0xosi3im5ccbx8l }, { id: user:nolu7yreqs4e5m7255oa }, { id: user:u384ycj1d2esi3yrasli }, { id: user:n4xnrq98ookevhmdd7d2 }, { id: user:5j5ujfu4dokcpdk51qa8 }, { id: user:jiqmlvrgafeorr50nvn9 }]]
+
+CREATE |user:10| VERSION d"2020-09-10";
+[[{ id: user:ze98ow4bzdcndzc5nlqj }, { id: user:gjqu2uh3wnp1cpjg1unt }, { id: user:17bxpjl4ptbxv9k2ghmt }, { id: user:fmqqeajf52neg4c7oaoq }, { id: user:bfn45ewsg86auvekeuz0 }, { id: user:834yq1tyatwopb4726mj }, { id: user:veehoua4cu65ff4wc8pf }, { id: user:y3az4pizc0ddpruixw6g }, { id: user:xrn6eqrtyqgg8cgpm9zp }, { id: user:s06acf74rsnvhvim3ys5 }]]
+
+RETURN count(SELECT * FROM user VERSION d"2020-09-09"); -- returns 10
+[10]
+
+RETURN count(SELECT * FROM user); -- returns 21
+[21]
+----
+
+== 隐式语句行为
+
+虽然 `CREATE` 语句需要许多定义才能执行，但SurrealDB默认会自动处理它们。这种行为最好通过启动一个新的数据库来观察。
+
+虽然通过Surrealist或 link:https://surrealdb.com/docs/surrealdb/cli/sql[surreal sql] 命令连接到SurrealDB时可以包含一个定义的命名空间和数据库，但在创建时命名空间和数据库名称并不存在。此时，它们只保存在预定义的 xref:parameters.adoc#session[$session] 参数中。这可以通过 xref:statements/info.adoc[INFO] 语句看到，它将显示新数据库中没有任何定义。
+
+[source,sql]
+----
+INFO FOR ROOT;
+INFO FOR NS;
+INFO FOR DB;
+RETURN $session;
+----
+
+.响应
+[source,sql]
+----
+-------- Query --------
+
+{
+	namespaces: {},
+	users: {}
+}
+
+-------- Query --------
+
+{
+	databases: {},
+	tokens: {},
+	users: {}
+}
+
+-------- Query --------
+
+{
+	analyzers: {},
+	functions: {},
+	models: {},
+	params: {},
+	scopes: {},
+	tables: {},
+	tokens: {},
+	users: {}
+}
+
+-------- Query --------
+
+{
+	db: 'sandbox',
+	exp: NONE,
+	id: NONE,
+	ip: NONE,
+	ns: 'sandbox',
+	or: NONE,
+	sc: NONE,
+	sd: NONE,
+	tk: NONE
+}
+----
+
+这是为了允许手动 xref:statements/define/database.adoc[define] 它们，例如通过包含一个注释。
+
+[source,sql]
+----
+DEFINE DATABASE my_database COMMENT "Some important info that I prefer to add manually";
+----
+
+然而，一旦创建或插入第一个记录，SurrealDB将访问会话数据以执行一系列定义语句，用于命名空间、数据库，然后添加所需表名的定义，以便操作可以继续进行。
+
+[source,sql]
+----
+-- Three DEFINE statements will happen to allow this operation
+CREATE person;
+
+INFO FOR ROOT;
+INFO FOR NS;
+INFO FOR DB;
+----
+
+.响应
+[source,sql]
+----
+-------- Query --------
+
+{
+	namespaces: {
+		sandbox: 'DEFINE NAMESPACE sandbox'
+	},
+	users: {}
+}
+
+-------- Query --------
+
+{
+	databases: {
+		sandbox: 'DEFINE DATABASE sandbox'
+	},
+	tokens: {},
+	users: {}
+}
+
+-------- Query 7 --------
+
+{
+	analyzers: {},
+	functions: {},
+	models: {},
+	params: {},
+	scopes: {},
+	tables: {
+		person: 'DEFINE TABLE person TYPE ANY SCHEMALESS PERMISSIONS NONE'
+	},
+	tokens: {},
+	users: {}
+}
+----
+
+要禁止这种行为，可以在 link:https://surrealdb.com/docs/surrealdb/cli/start[启动数据库] 时传递 `--strict` 标志。在严格模式下，在使用之前必须先显式定义所有内容。
+
+[source,sql]
+----
+ns/db> CREATE person;
+["The namespace 'ns' does not exist"]
+
+ns/db> DEFINE NAMESPACE ns;
+[NONE]
+
+ns/db> CREATE person;
+["The database 'db' does not exist"]
+
+ns/db> DEFINE DATABASE db;
+[NONE]
+
+ns/db> CREATE person;
+["The table 'person' does not exist"]
+
+ns/db> DEFINE TABLE person;
+[NONE]
+
+ns/db> CREATE person;
+[[{ id: person:c76lfw6n4yb1z2dj9xaj }]]
+----
+
+== 了解更多
+
+要了解更多关于SurrealDB的信息，请查看以下资源：
+
+* link:https://surrealdb.com/docs/surrealdb/introduction/start[Getting started guide]
+* xref:statements/select.adoc[Select语句]
+* xref:statements/update.adoc[Update语句]
+* xref:statements/insert.adoc[Insert语句]
+* xref:statements/delete.adoc[Delete语句]
+* xref:statements/relate.adoc[Relate语句]
